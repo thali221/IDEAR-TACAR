@@ -1,0 +1,2612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IDEAR TACAR</title>
+<meta name="description" content="IDEAR TACAR — Transforma. Reutiliza. Inspira.">
+<meta name="theme-color" content="#0684E5">
+<style>
+  :root{
+    --cream:#FFE4B9; --green:#C0ECB8; --turquoise:#4ABBBD;
+    --petrol:#1E80A0; --blue:#0684E5; --deep:#0D2E92;
+    --white:#FFFFFF; --bg:#F4FBFC; --surface:#FFFFFF; --border:#DCEEF2;
+    --text-strong:#123047; --text:#2B4A5A; --text-muted:#66808C; --text-faint:#93AAB4;
+    --danger:#C0392B; --danger-bg:#FDECEA; --danger-border:#F5C0BB;
+    --radius-lg:22px; --radius-md:16px; --radius-sm:12px;
+    --focus-ring:0 0 0 3px rgba(6,132,229,0.45);
+  }
+  [data-theme="dark"]{
+    --bg:#071B2B; --surface:#0E2B41; --border:#153A52;
+    --text-strong:#F2FAFD; --text:#CFE6EE; --text-muted:#8EB4C2; --text-faint:#5D8494;
+    --danger-bg:#3A1F1C; --danger-border:#5C2C26;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--text);
+    min-height:100vh; transition:background .25s ease, color .25s ease;
+  }
+  button, input, textarea{ font-family:inherit; }
+  button{ -webkit-tap-highlight-color:transparent; }
+  .hidden{ display:none !important; }
+  :focus-visible{ outline:none; box-shadow:var(--focus-ring); border-radius:8px; }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+
+  #app{ max-width:520px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; background:var(--bg); position:relative; }
+
+  /* ===== SPLASH ===== */
+  #splash{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:100vh; text-align:center; padding:40px 28px; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, var(--deep) 0%, var(--blue) 55%, var(--turquoise) 100%);
+  }
+  .wave-decor{ position:absolute; inset:0; opacity:.16; pointer-events:none; }
+  .splash-logo-ring{
+    width:114px; height:114px; border-radius:50%;
+    background:rgba(255,255,255,.14); backdrop-filter:blur(2px);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 14px 40px rgba(13,46,146,0.35); margin-bottom:24px;
+    animation:popIn .6s cubic-bezier(.2,.9,.3,1.2);
+  }
+  @keyframes popIn{ from{ transform:scale(.6); opacity:0; } to{ transform:scale(1); opacity:1; } }
+  .splash-logo-inner{ width:92px; height:92px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; }
+  .splash-logo-inner svg{ width:48px; height:48px; }
+  .splash-title{ font-size:30px; font-weight:900; letter-spacing:-.02em; color:#fff; margin-bottom:6px; animation:fadeUp .5s ease .1s both; }
+  .splash-sub{ color:var(--cream); font-size:14px; margin-bottom:38px; letter-spacing:.02em; font-weight:600; animation:fadeUp .5s ease .2s both; }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:translateY(0); } }
+  .btn-start{
+    padding:15px 46px; border-radius:50px; border:none; cursor:pointer;
+    background:var(--cream); color:var(--deep); font-size:16px; font-weight:800;
+    box-shadow:0 10px 28px rgba(0,0,0,.2); transition:transform .15s ease;
+  }
+  .btn-start:active{ transform:scale(.97); }
+  .splash-foot{ position:absolute; bottom:22px; font-size:11px; color:rgba(255,255,255,.75); letter-spacing:.04em; padding:0 20px; text-align:center; }
+
+  /* ===== TOP BAR ===== */
+  #topbar{
+    background:var(--deep); color:#fff;
+    padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    position:sticky; top:0; z-index:20;
+  }
+  .topbar-brand{ display:flex; align-items:center; gap:8px; min-width:0; }
+  .topbar-icon{ width:30px; height:30px; border-radius:9px; flex-shrink:0; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; }
+  .topbar-icon svg{ width:17px; height:17px; }
+  .topbar-name{ font-size:15px; font-weight:900; letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .topbar-actions{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .topbar-pts{ background:rgba(192,236,184,.22); border:1px solid rgba(192,236,184,.5); border-radius:20px; padding:5px 11px; font-size:12px; font-weight:700; color:var(--green); white-space:nowrap; }
+  .icon-btn{ background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); width:34px; height:34px; border-radius:10px; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; color:#fff; }
+
+  /* ===== CONTENT ===== */
+  #content{ flex:1; padding-bottom:96px; }
+  .tab-content{ padding:20px 16px 8px; animation:fadeIn .35s ease; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  .tab-header{ margin-bottom:18px; }
+  .tab-header h1{ font-size:21px; font-weight:900; color:var(--text-strong); margin:0 0 4px; }
+  .tab-header p{ font-size:13px; color:var(--text-muted); margin:0; }
+
+  .pill{ display:inline-block; border-radius:20px; padding:5px 12px; font-size:12px; font-weight:700; }
+  .pill-blue{ background:rgba(6,132,229,.12); color:var(--blue); border:1px solid rgba(6,132,229,.3); }
+  .pill-green{ background:rgba(192,236,184,.4); color:#2f7a3f; border:1px solid rgba(192,236,184,.7); }
+  [data-theme="dark"] .pill-green{ color:var(--green); background:rgba(192,236,184,.14); }
+  .pill-gray{ background:var(--bg); color:var(--text-muted); border:1px solid var(--border); }
+  .pill-cream{ background:var(--cream); color:#7a5210; border:1px solid #f0cf94; }
+
+  .card{ background:var(--surface); border-radius:var(--radius-md); padding:16px; border:1px solid var(--border); margin-bottom:12px; }
+  .btn-primary{ width:100%; padding:15px; border-radius:14px; border:none; cursor:pointer; background:var(--blue); color:#fff; font-size:15px; font-weight:700; box-shadow:0 8px 20px rgba(6,132,229,.3); transition:transform .15s; }
+  .btn-primary:active{ transform:scale(.98); }
+  .btn-primary:disabled{ opacity:.5; cursor:not-allowed; box-shadow:none; }
+  .btn-green{ width:100%; padding:14px; border-radius:14px; border:none; cursor:pointer; background:#2f9e56; color:#fff; font-size:14px; font-weight:700; box-shadow:0 8px 18px rgba(47,158,86,.28); }
+  .btn-secondary{ width:100%; padding:13px; border-radius:14px; border:1.5px solid var(--petrol); background:transparent; color:var(--petrol); font-size:14px; font-weight:700; cursor:pointer; }
+  [data-theme="dark"] .btn-secondary{ color:var(--turquoise); border-color:var(--turquoise); }
+  .btn-ghost{ width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text-muted); font-size:13px; cursor:pointer; }
+  .section-label{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--text-faint); margin:0 0 10px; }
+
+  /* ===== INICIO ===== */
+  .hello-block{ margin-bottom:16px; }
+  .hello-block h1{ font-size:23px; font-weight:900; color:var(--text-strong); margin:0 0 2px; }
+  .hello-block p{ font-size:14px; color:var(--text-muted); margin:0; }
+  .hero-card{
+    border-radius:var(--radius-lg); padding:22px; margin-bottom:22px;
+    background:linear-gradient(135deg, var(--deep), var(--blue) 70%, var(--turquoise));
+    color:#fff; position:relative; overflow:hidden;
+  }
+  .hero-card::after{ content:""; position:absolute; right:-30px; bottom:-30px; width:130px; height:130px; border-radius:50%; background:rgba(255,255,255,.1); }
+  .hero-eyebrow{ font-size:12px; font-weight:800; letter-spacing:.04em; opacity:.9; margin-bottom:8px; }
+  .hero-title{ font-size:19px; font-weight:900; margin:0 0 6px; }
+  .hero-text{ font-size:13px; opacity:.92; line-height:1.5; margin:0 0 16px; max-width:88%; }
+  .hero-card .btn-start-analyze{ background:var(--cream); color:var(--deep); border:none; border-radius:14px; padding:13px 22px; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.18); position:relative; z-index:1; }
+
+  .impact-strip{ display:flex; gap:9px; margin-bottom:22px; }
+  .impact-chip{ flex:1; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:12px 8px; text-align:center; }
+  .impact-chip .v{ font-size:16px; font-weight:900; color:var(--text-strong); }
+  .impact-chip .l{ font-size:10px; color:var(--text-faint); margin-top:2px; }
+
+  .proj-scroll{ display:flex; gap:11px; overflow-x:auto; padding-bottom:6px; margin:0 -16px; padding-left:16px; padding-right:16px; }
+  .proj-card{ flex:0 0 148px; background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; cursor:pointer; }
+  .proj-card img{ width:100%; height:90px; object-fit:cover; display:block; }
+  .proj-card .p-body{ padding:9px 10px; }
+  .proj-card .p-title{ font-size:12px; font-weight:800; color:var(--text-strong); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .proj-card .p-meta{ font-size:10px; color:var(--text-muted); margin-top:2px; }
+  .proj-card .p-xp{ font-size:10px; font-weight:800; color:var(--blue); margin-top:4px; }
+
+  /* ===== TRANSFORMAR ===== */
+  .upload-zone{ border:2px dashed var(--petrol); border-radius:18px; padding:32px 18px; text-align:center; cursor:pointer; margin-bottom:12px; background:rgba(30,128,160,.06); transition:border-color .2s; }
+  .upload-zone.green{ border-color:#8fcf82; background:rgba(192,236,184,.18); }
+  .upload-circle{ width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 10px; background:var(--surface); }
+  .upload-title{ color:var(--text-strong); font-weight:700; font-size:14px; margin-bottom:3px; }
+  .upload-sub{ color:var(--text-faint); font-size:12px; }
+  .tags-grid{ display:flex; flex-wrap:wrap; gap:7px; }
+
+  .cat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:14px 0 18px; }
+  .cat-btn{ background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:12px 6px; text-align:center; cursor:pointer; }
+  .cat-btn .cat-emoji{ font-size:22px; display:block; margin-bottom:5px; }
+  .cat-btn .cat-name{ font-size:11px; font-weight:700; color:var(--text); }
+  .cat-btn.selected{ border-color:var(--blue); background:rgba(6,132,229,.08); }
+  .cat-btn.selected .cat-name{ color:var(--blue); }
+
+  #preview-img{ width:100%; height:210px; object-fit:cover; border-radius:16px; margin-bottom:12px; border:1px solid var(--border); }
+  #preview-label{ font-size:13px; font-weight:600; color:var(--text-strong); margin-bottom:14px; text-align:center; }
+
+  #loading-screen{ display:none; flex-direction:column; align-items:center; justify-content:center; padding:52px 24px; gap:22px; text-align:center; }
+  .spin-wrap{ position:relative; width:88px; height:88px; }
+  .spin-outer{ width:88px; height:88px; border-radius:50%; border:3px solid rgba(6,132,229,.15); border-top:3px solid var(--blue); position:absolute; animation:spin 1s linear infinite; }
+  .spin-inner{ width:64px; height:64px; border-radius:50%; border:3px solid rgba(192,236,184,.5); border-top:3px solid var(--turquoise); position:absolute; top:12px; left:12px; animation:spin 1.4s linear infinite reverse; }
+  .spin-center{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:26px; }
+  @keyframes spin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  .loading-title{ font-size:16px; font-weight:800; color:var(--text-strong); margin-bottom:4px; min-height:20px; }
+  .loading-sub{ font-size:12px; color:var(--text-faint); }
+
+  #result-screen{ display:none; }
+  .result-hero{ position:relative; border-radius:18px; overflow:hidden; margin-bottom:14px; }
+  .result-hero-img{ width:100%; height:190px; object-fit:cover; display:block; }
+  .result-hero-overlay{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(13,46,146,.05) 0%, rgba(13,46,146,.65) 100%); }
+  .result-hero-text{ position:absolute; bottom:14px; left:16px; right:16px; }
+  .result-hero-text h2{ font-size:20px; font-weight:900; color:#fff; margin:8px 0 3px; }
+  .result-hero-text p{ font-size:12px; color:#eaf3f7; margin:0; }
+  .local-badge{ display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,.2); color:#fff; font-size:10px; font-weight:700; padding:3px 9px; border-radius:8px; }
+  .back-btn{ position:absolute; top:12px; left:12px; background:rgba(255,255,255,.9); border:none; border-radius:10px; padding:6px 12px; font-size:12px; font-weight:700; color:var(--deep); cursor:pointer; z-index:2; }
+
+  .id-box{ display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:13px 14px; margin-bottom:16px; }
+  .id-box .id-emoji{ font-size:26px; }
+  .id-box .id-name{ font-size:13px; font-weight:800; color:var(--text-strong); }
+  .id-box .id-conf{ font-size:11px; color:var(--text-muted); margin-top:2px; }
+
+  .stats-row{ display:flex; gap:10px; margin-bottom:16px; }
+  .stat-card{ flex:1; background:var(--surface); border-radius:14px; padding:12px 8px; text-align:center; border:1px solid var(--border); }
+  .stat-icon{ font-size:17px; margin-bottom:3px; }
+  .stat-val{ font-size:12px; font-weight:700; color:var(--text-strong); }
+
+  .steps-list{ display:flex; flex-direction:column; gap:8px; }
+  .step-item{ background:var(--surface); border-radius:13px; padding:12px 13px; display:flex; align-items:flex-start; gap:11px; border:1px solid var(--border); cursor:pointer; }
+  .step-item.active{ border-color:var(--blue); background:rgba(6,132,229,.06); }
+  .step-num{ min-width:28px; height:28px; border-radius:9px; background:rgba(6,132,229,.1); color:var(--blue); font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .step-item.active .step-num{ background:var(--blue); color:#fff; }
+  .step-text{ font-size:13px; color:var(--text); line-height:1.5; padding-top:3px; }
+
+  .eco-box{ background:linear-gradient(135deg, rgba(192,236,184,.35), rgba(74,187,189,.18)); border:1px solid rgba(74,187,189,.4); border-radius:14px; padding:14px; margin-bottom:14px; display:flex; gap:11px; }
+  .eco-box-icon{ font-size:24px; }
+  .eco-box-title{ font-size:13px; font-weight:800; color:#2f7a3f; margin-bottom:3px; }
+  [data-theme="dark"] .eco-box-title{ color:var(--green); }
+  .eco-box-text{ font-size:12px; color:var(--text); line-height:1.5; }
+
+  .impact-box{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:16px; }
+  .impact-box-title{ font-size:13px; font-weight:800; color:var(--text-strong); margin-bottom:8px; }
+  .impact-row{ display:flex; gap:10px; }
+  .impact-num{ flex:1; text-align:center; background:var(--bg); border-radius:12px; padding:10px 6px; }
+  .impact-num .n{ font-size:16px; font-weight:900; color:var(--blue); }
+  .impact-num .t{ font-size:10px; color:var(--text-faint); margin-top:2px; }
+  .impact-note{ font-size:10px; color:var(--text-faint); margin-top:8px; }
+
+  .alt-scroll{ display:flex; gap:10px; overflow-x:auto; margin:0 -16px 16px; padding:0 16px 4px; }
+  .alt-card{ flex:0 0 168px; background:var(--surface); border:1px solid var(--border); border-radius:15px; padding:12px; cursor:pointer; }
+  .alt-card .a-name{ font-size:12.5px; font-weight:800; color:var(--text-strong); margin-bottom:4px; }
+  .alt-card .a-desc{ font-size:11px; color:var(--text-muted); line-height:1.4; margin-bottom:8px; min-height:44px; }
+  .alt-card .a-meta{ font-size:10px; color:var(--text-faint); display:flex; justify-content:space-between; }
+  .alt-card:hover, .alt-card:focus-visible{ border-color:var(--blue); }
+
+  .result-actions{ display:flex; gap:8px; margin-bottom:10px; }
+  .result-actions .btn-primary, .result-actions .btn-green{ flex:1; }
+  .icon-toggle{ width:48px; flex-shrink:0; border-radius:14px; border:1px solid var(--border); background:var(--surface); font-size:18px; cursor:pointer; }
+  .share-row{ display:flex; gap:8px; }
+  .share-row button{ flex:1; }
+
+  .error-box{ background:var(--danger-bg); border:1px solid var(--danger-border); border-radius:12px; padding:11px 13px; color:var(--danger); font-size:13px; margin-bottom:12px; }
+
+  .hist-item{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:12px 13px; margin-bottom:9px; display:flex; gap:11px; align-items:center; cursor:pointer; }
+  .hist-emoji{ width:40px; height:40px; border-radius:11px; background:rgba(6,132,229,.1); display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
+  .hist-info{ flex:1; min-width:0; }
+  .hist-title{ font-size:13px; font-weight:700; color:var(--text-strong); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .hist-meta{ font-size:11px; color:var(--text-faint); }
+  .hist-fav-btn{ background:none; border:none; font-size:17px; cursor:pointer; flex-shrink:0; }
+  .empty-state{ text-align:center; padding:36px 20px; color:var(--text-faint); font-size:13px; }
+  .subtab-row{ display:flex; gap:8px; margin-bottom:16px; }
+  .subtab-btn{ flex:1; padding:9px; border-radius:11px; border:1px solid var(--border); background:var(--surface); color:var(--text-muted); font-size:12px; font-weight:700; cursor:pointer; }
+  .subtab-btn.active{ background:var(--deep); border-color:var(--deep); color:#fff; }
+
+  /* ===== NOTICIAS ===== */
+  .search-wrap{ position:relative; margin-bottom:14px; }
+  .search-wrap input{ width:100%; padding:12px 14px 12px 38px; border-radius:13px; background:var(--surface); border:1px solid var(--border); color:var(--text-strong); font-size:14px; outline:none; }
+  .search-icon{ position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:15px; color:var(--text-faint); }
+  .cat-chip-row{ display:flex; gap:7px; overflow-x:auto; margin:0 -16px 14px; padding:0 16px 4px; }
+  .cat-chip{ flex-shrink:0; padding:7px 14px; border-radius:20px; border:1px solid var(--border); background:var(--surface); color:var(--text-muted); font-size:12px; font-weight:700; cursor:pointer; }
+  .cat-chip.active{ background:var(--blue); border-color:var(--blue); color:#fff; }
+  .source-note{ font-size:11px; color:var(--text-faint); margin:0 0 16px; }
+  .news-card{ background:var(--surface); border-radius:16px; padding:13px; margin-bottom:10px; border:1px solid var(--border); display:flex; gap:11px; align-items:flex-start; cursor:pointer; }
+  .news-emoji-box{ width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .news-body{ flex:1; min-width:0; }
+  .news-title{ font-size:13px; font-weight:700; color:var(--text-strong); margin:5px 0 4px; line-height:1.4; }
+  .news-meta{ font-size:11px; color:var(--text-faint); }
+  .news-save{ background:none; border:none; font-size:16px; cursor:pointer; flex-shrink:0; }
+
+  /* ===== COMUNIDAD ===== */
+  .comm-hero{ margin-bottom:18px; }
+  .comm-hero h1{ font-size:21px; font-weight:900; color:var(--text-strong); margin:0 0 4px; }
+  .comm-hero p{ font-size:13px; color:var(--text-muted); margin:0; }
+  .compose-card{ background:var(--surface); border-radius:16px; padding:13px; margin-bottom:18px; border:1px solid var(--border); }
+  .compose-textarea{ width:100%; background:transparent; border:none; color:var(--text-strong); font-size:13px; resize:none; outline:none; min-height:52px; line-height:1.5; }
+  .compose-textarea::placeholder{ color:var(--text-faint); }
+  .compose-footer{ display:flex; justify-content:flex-end; align-items:center; border-top:1px solid var(--border); padding-top:9px; margin-top:6px; }
+  .btn-post{ background:var(--blue); border:none; border-radius:10px; padding:8px 18px; color:#fff; font-size:13px; font-weight:700; cursor:pointer; }
+  .btn-post:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .creators-scroll{ display:flex; gap:10px; overflow-x:auto; margin:0 -16px 20px; padding:0 16px 4px; }
+  .creator-card{ flex:0 0 108px; background:var(--surface); border:1px solid var(--border); border-radius:15px; padding:14px 8px; text-align:center; }
+  .creator-avatar{ width:44px; height:44px; border-radius:50%; background:rgba(6,132,229,.12); display:flex; align-items:center; justify-content:center; font-size:20px; margin:0 auto 7px; }
+  .creator-name{ font-size:11.5px; font-weight:800; color:var(--text-strong); }
+  .creator-meta{ font-size:10px; color:var(--text-faint); margin-top:2px; }
+
+  .post-card{ background:var(--surface); border-radius:18px; overflow:hidden; margin-bottom:12px; border:1px solid var(--border); }
+  .post-header{ padding:12px 13px 9px; display:flex; align-items:center; gap:10px; }
+  .post-avatar{ width:36px; height:36px; border-radius:50%; background:rgba(6,132,229,.12); display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
+  .post-name{ font-size:13px; font-weight:700; color:var(--text-strong); }
+  .post-time{ font-size:11px; color:var(--text-faint); }
+  .post-del{ margin-left:auto; background:none; border:none; font-size:15px; cursor:pointer; color:var(--text-faint); }
+  .post-text{ font-size:13px; color:var(--text); line-height:1.5; padding:0 13px 10px; white-space:pre-wrap; word-break:break-word; }
+  .post-img{ width:100%; height:170px; object-fit:cover; display:block; }
+  .post-reactions{ padding:10px 13px; display:flex; gap:7px; align-items:center; flex-wrap:wrap; border-top:1px solid var(--bg); }
+  .reaction-btn{ background:var(--bg); border:1px solid var(--border); border-radius:20px; padding:5px 10px; font-size:12px; cursor:pointer; color:var(--text-muted); }
+  .reaction-btn.active{ background:rgba(6,132,229,.12); border-color:var(--blue); color:var(--blue); }
+  .save-btn{ margin-left:auto; background:none; border:none; font-size:15px; cursor:pointer; color:var(--text-faint); }
+  .save-btn.active{ color:var(--blue); }
+  .community-note{ font-size:11px; color:var(--text-faint); margin:-12px 0 18px; }
+
+  /* ===== PERFIL ===== */
+  .profile-card{ background:linear-gradient(135deg, var(--deep), var(--petrol)); border-radius:var(--radius-lg); padding:20px; margin-bottom:14px; color:#fff; position:relative; overflow:hidden; }
+  .profile-card::before{ content:''; position:absolute; top:-30px; right:-30px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,.08); }
+  .profile-top{ display:flex; align-items:center; gap:13px; margin-bottom:16px; }
+  .profile-avatar{ width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,.14); display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+  .profile-name{ font-size:17px; font-weight:900; margin-bottom:2px; }
+  .profile-level{ font-size:12px; font-weight:700; color:var(--cream); margin-bottom:2px; }
+  .profile-since{ font-size:11px; opacity:.8; }
+  .xp-label{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:7px; opacity:.92; }
+  .xp-label span:last-child{ font-weight:700; color:var(--cream); }
+  .xp-bar{ background:rgba(255,255,255,.22); border-radius:100px; height:9px; overflow:hidden; }
+  .xp-fill{ height:100%; border-radius:100px; background:var(--cream); transition:width .4s ease; }
+  .stats-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; margin-bottom:16px; }
+  .stat3{ background:var(--surface); border-radius:14px; padding:13px 8px; text-align:center; border:1px solid var(--border); }
+  .stat3-icon{ font-size:19px; margin-bottom:4px; }
+  .stat3-val{ font-size:17px; font-weight:900; color:var(--text-strong); }
+  .stat3-label{ font-size:10px; color:var(--text-faint); }
+  .badges-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:18px; }
+  .badge-card{ background:var(--surface); border-radius:14px; padding:13px 8px; text-align:center; border:1px solid var(--border); }
+  .badge-card.earned{ border-color:var(--blue); background:rgba(6,132,229,.06); }
+  .badge-card:not(.earned){ opacity:.4; }
+  .badge-emoji{ font-size:24px; margin-bottom:5px; }
+  .badge-name{ font-size:10px; font-weight:600; color:var(--blue); line-height:1.3; }
+  .settings-row{ display:flex; align-items:center; justify-content:space-between; padding:13px 4px; border-bottom:1px solid var(--border); font-size:13px; color:var(--text); }
+  .settings-row:last-child{ border-bottom:none; }
+  .switch{ position:relative; width:44px; height:25px; flex-shrink:0; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .switch-slider{ position:absolute; inset:0; background:var(--border); border-radius:30px; cursor:pointer; transition:.2s; }
+  .switch-slider:before{ content:""; position:absolute; width:19px; height:19px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s; }
+  .switch input:checked + .switch-slider{ background:var(--blue); }
+  .switch input:checked + .switch-slider:before{ transform:translateX(19px); }
+  .danger-btn{ width:100%; padding:12px; border-radius:12px; border:1px solid var(--danger-border); background:var(--danger-bg); color:var(--danger); font-size:13px; font-weight:700; cursor:pointer; margin-top:6px; }
+  .arch-note{ font-size:11px; color:var(--text-faint); line-height:1.5; padding:12px 4px 0; }
+
+  /* ===== BOTTOM NAV ===== */
+  #bottomnav{
+    background:var(--surface); border-top:1px solid var(--border);
+    display:flex; justify-content:space-around; align-items:flex-end;
+    padding:9px 0 calc(10px + env(safe-area-inset-bottom,0px));
+    position:fixed; bottom:0; left:0; right:0;
+    max-width:520px; margin:0 auto;
+  }
+  .nav-btn{ background:none; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; padding:4px 8px; color:var(--text-faint); }
+  .nav-btn .nav-icon{ font-size:19px; }
+  .nav-btn .nav-label{ font-size:10px; font-weight:600; }
+  .nav-btn[aria-current="page"]{ color:var(--blue); }
+  .nav-center{ margin-top:-30px; }
+  .nav-center .nav-icon-wrap{ width:54px; height:54px; border-radius:50%; background:var(--blue); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(6,132,229,.45); border:4px solid var(--surface); }
+  .nav-center .nav-icon{ font-size:22px; }
+  .nav-center[aria-current="page"] .nav-icon-wrap{ background:var(--deep); }
+  .nav-center .nav-label{ color:var(--blue); font-weight:800; margin-top:2px; }
+
+  /* ===== TOASTS ===== */
+  #toast-region{ position:fixed; bottom:104px; left:0; right:0; display:flex; flex-direction:column; align-items:center; gap:8px; z-index:100; pointer-events:none; padding:0 16px; }
+  .toast{ background:var(--deep); color:#fff; font-size:13px; font-weight:600; padding:11px 18px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.25); animation:toastIn .25s ease, toastOut .25s ease 2.3s forwards; max-width:520px; text-align:center; }
+  @keyframes toastIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes toastOut{ to{opacity:0; transform:translateY(-6px);} }
+
+  @media (min-width:521px){
+    #app{ box-shadow:0 0 60px rgba(0,0,0,.08); min-height:100vh; }
+  }
+
+  /* ===== ONBOARDING ===== */
+  #onboarding-overlay{ position:fixed; inset:0; z-index:200; background:linear-gradient(160deg, var(--deep) 0%, var(--blue) 55%, var(--turquoise) 100%); display:flex; flex-direction:column; max-width:520px; margin:0 auto; }
+  .ob-skip{ align-self:flex-end; margin:calc(14px + env(safe-area-inset-top,0px)) 16px 0; background:rgba(255,255,255,.16); border:none; color:#fff; font-size:12px; font-weight:700; padding:8px 14px; border-radius:20px; cursor:pointer; }
+  .ob-body{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px 32px; }
+  .ob-emoji{ font-size:52px; margin-bottom:18px; }
+  .ob-title{ color:#fff; font-size:21px; font-weight:900; margin:0 0 8px; }
+  .ob-text{ color:var(--cream); font-size:13.5px; line-height:1.6; max-width:320px; }
+  .ob-dots{ display:flex; gap:6px; justify-content:center; margin:22px 0; }
+  .ob-dot{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.3); }
+  .ob-dot.active{ background:#fff; width:20px; border-radius:5px; transition:.2s; }
+  .ob-foot{ padding:8px 24px calc(28px + env(safe-area-inset-bottom,0px)); }
+
+  /* ===== SCREENS (pantallas secundarias a pantalla completa) ===== */
+  .screen-overlay{ position:fixed; inset:0; z-index:150; background:var(--bg); max-width:520px; margin:0 auto; display:flex; flex-direction:column; }
+  .screen-head{ background:var(--deep); color:#fff; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 14px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:5; }
+  .screen-back{ background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); width:32px; height:32px; border-radius:10px; color:#fff; font-size:15px; cursor:pointer; flex-shrink:0; }
+  .screen-head-title{ font-size:15px; font-weight:900; }
+  .screen-head-sub{ font-size:11px; opacity:.82; margin-top:1px; }
+  .screen-body{ flex:1; overflow-y:auto; padding:18px 16px 40px; }
+
+  /* ===== QUICK ACTIONS (Inicio) ===== */
+  .quick-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:22px; }
+  .quick-btn{ background:var(--surface); border:1px solid var(--border); border-radius:15px; padding:13px 6px; text-align:center; cursor:pointer; }
+  .quick-btn .q-emoji{ font-size:21px; display:block; margin-bottom:5px; }
+  .quick-btn .q-label{ font-size:10.5px; font-weight:700; color:var(--text); line-height:1.25; }
+
+  /* ===== RETOS ===== */
+  .reto-card{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px; margin-bottom:10px; display:flex; gap:12px; align-items:center; }
+  .reto-card.done{ border-color:#8fcf82; background:rgba(192,236,184,.16); }
+  .reto-emoji{ font-size:24px; width:42px; text-align:center; flex-shrink:0; }
+  .reto-title{ font-size:13.5px; font-weight:800; color:var(--text-strong); }
+  .reto-desc{ font-size:11.5px; color:var(--text-muted); margin-top:2px; }
+  .reto-bar{ background:var(--bg); border-radius:100px; height:6px; overflow:hidden; margin-top:7px; }
+  .reto-fill{ height:100%; background:var(--blue); border-radius:100px; }
+  .reto-xp{ font-size:11px; font-weight:800; color:var(--blue); flex-shrink:0; white-space:nowrap; }
+  .reto-card.done .reto-xp{ color:#2f9e56; }
+  [data-theme="dark"] .reto-card.done .reto-xp{ color:var(--green); }
+
+  /* ===== PLANETA VIVO ===== */
+  .planet-hero{ background:linear-gradient(135deg, #2f9e56, var(--turquoise)); border-radius:var(--radius-lg); padding:22px; color:#fff; text-align:center; margin-bottom:18px; }
+  .planet-hero .p-big{ font-size:34px; font-weight:900; }
+  .planet-hero .p-sub{ font-size:12.5px; opacity:.92; margin-top:2px; }
+  .chart-bars{ display:flex; align-items:flex-end; gap:6px; height:120px; margin:10px 0 6px; }
+  .chart-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .chart-bar{ width:100%; max-width:22px; background:linear-gradient(180deg, var(--blue), var(--turquoise)); border-radius:6px 6px 2px 2px; min-height:3px; }
+  .chart-label{ font-size:9px; color:var(--text-faint); margin-top:5px; }
+  .cat-usage-row{ display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+  .cat-usage-row:last-child{ border-bottom:none; }
+  .cat-usage-bar{ flex:1; background:var(--bg); border-radius:100px; height:8px; overflow:hidden; }
+  .cat-usage-fill{ height:100%; background:var(--turquoise); border-radius:100px; }
+
+  /* ===== ECOMAPA ===== */
+  .map-placeholder{ background:linear-gradient(135deg, rgba(6,132,229,.12), rgba(74,187,189,.12)); border:1.5px dashed var(--petrol); border-radius:18px; padding:30px 18px; text-align:center; margin-bottom:16px; }
+  .map-placeholder .m-emoji{ font-size:36px; margin-bottom:10px; }
+  .loc-chip{ display:flex; align-items:center; gap:9px; background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:12px 14px; margin-bottom:12px; font-size:12.5px; color:var(--text); }
+
+  /* ===== ECOEMPRENDE ===== */
+  .field-label{ display:block; font-size:12px; font-weight:700; color:var(--text-muted); margin:0 0 6px; }
+  .field-input{ width:100%; padding:11px 13px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text-strong); font-size:13.5px; margin-bottom:14px; }
+  .biz-result{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; margin-top:6px; }
+  .biz-row{ display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+  .biz-row:last-child{ border-bottom:none; }
+  .biz-row b{ color:var(--text-strong); }
+
+  /* ===== ANTES / DESPUÉS ===== */
+  .ad-pair{ display:flex; gap:8px; margin-bottom:14px; }
+  .ad-slot{ flex:1; aspect-ratio:1; border-radius:14px; border:2px dashed var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; overflow:hidden; position:relative; background:var(--surface); }
+  .ad-slot img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+  .ad-slot span.ad-tag{ position:absolute; top:6px; left:6px; background:rgba(13,46,146,.75); color:#fff; font-size:10px; font-weight:800; padding:3px 8px; border-radius:8px; z-index:1; }
+  .ad-item{ background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin-bottom:12px; }
+  .ad-item .ad-imgs{ display:flex; }
+  .ad-item .ad-imgs img{ width:50%; height:120px; object-fit:cover; }
+  .ad-item .ad-body{ padding:11px 13px; }
+
+  .info-note{ font-size:11.5px; color:var(--text-faint); line-height:1.5; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:11px 13px; margin-bottom:14px; }
+
+  /* ===== 3 IDEAS INTELIGENTES ===== */
+  .idea3-card{ background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:14px; margin-bottom:11px; cursor:pointer; display:flex; gap:12px; align-items:flex-start; }
+  .idea3-card:active{ transform:scale(.99); }
+  .idea3-tag{ font-size:10px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; padding:3px 9px; border-radius:8px; display:inline-block; margin-bottom:6px; }
+  .idea3-tag.practica{ background:rgba(6,132,229,.12); color:var(--blue); }
+  .idea3-tag.creativa{ background:rgba(192,236,184,.4); color:#2f7a3f; }
+  [data-theme="dark"] .idea3-tag.creativa{ color:var(--green); background:rgba(192,236,184,.14); }
+  .idea3-tag.innovadora{ background:var(--cream); color:#7a5210; }
+  .idea3-emoji{ font-size:26px; flex-shrink:0; }
+  .idea3-name{ font-size:14px; font-weight:800; color:var(--text-strong); margin-bottom:3px; }
+  .idea3-desc{ font-size:12px; color:var(--text-muted); line-height:1.45; }
+  .idea3-meta{ font-size:11px; color:var(--text-faint); margin-top:6px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ SPLASH ============ -->
+  <div id="splash">
+    <div class="splash-logo-ring">
+      <div class="splash-logo-inner">
+        <svg viewBox="0 0 52 52" fill="none" aria-hidden="true">
+          <ellipse cx="16" cy="20" rx="13" ry="9" fill="#DCF3EE" stroke="#4ABBBD" stroke-width="1.5"/>
+          <ellipse cx="36" cy="20" rx="13" ry="9" fill="#DFF6D9" stroke="#C0ECB8" stroke-width="1.5"/>
+          <ellipse cx="14" cy="34" rx="10" ry="7" fill="#D4EEF9" stroke="#0684E5" stroke-width="1.5"/>
+          <ellipse cx="38" cy="34" rx="10" ry="7" fill="#DFF6D9" stroke="#4ABBBD" stroke-width="1.5"/>
+          <path d="M26 14 L26 38" stroke="#0D2E92" stroke-width="2" stroke-linecap="round"/>
+          <path d="M22 18 L26 14 L30 18" stroke="#0D2E92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M22 34 L26 38 L30 34" stroke="#0D2E92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+    </div>
+    <h1 class="splash-title">IDEAR TACAR</h1>
+    <p class="splash-sub">Transforma. Reutiliza. Inspira.</p>
+    <button class="btn-start" id="btn-comenzar" onclick="App.start()">Comenzar ✨</button>
+    <p class="splash-foot">Generación de ideas en modo local — funciona sin conexión</p>
+  </div>
+
+  <!-- ============ ONBOARDING (solo primera vez) ============ -->
+  <div id="onboarding-overlay" class="hidden">
+    <button class="ob-skip" onclick="Onboarding.finish()">Saltar</button>
+    <div class="ob-body">
+      <div class="ob-emoji" id="ob-emoji">📷</div>
+      <h2 class="ob-title" id="ob-title">Escanea</h2>
+      <p class="ob-text" id="ob-text">Toma una foto de algo que ya no uses en ECO SCAN.</p>
+    </div>
+    <div class="ob-dots" id="ob-dots"></div>
+    <div class="ob-foot">
+      <button class="btn-start" style="width:100%;" id="ob-next" onclick="Onboarding.next()">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- ============ MAIN APP ============ -->
+  <div id="main-app" class="hidden" style="display:flex; flex-direction:column; flex:1;">
+
+    <div id="topbar">
+      <div class="topbar-brand">
+        <div class="topbar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+        </div>
+        <span class="topbar-name">IDEAR TACAR</span>
+      </div>
+      <div class="topbar-actions">
+        <span class="topbar-pts" id="topbar-pts" aria-live="polite">⚡ 0 pts</span>
+        <button class="icon-btn" id="theme-toggle" aria-label="Cambiar modo oscuro" onclick="App.toggleTheme()">🌙</button>
+      </div>
+    </div>
+
+    <div id="content">
+
+      <!-- ===================== TAB INICIO ===================== -->
+      <section id="tab-inicio" class="tab-content" aria-labelledby="inicio-h1">
+        <div class="hello-block">
+          <h1 id="inicio-h1">Hola 👋</h1>
+          <p>¿Qué podemos transformar hoy?</p>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-eyebrow">📸 ANALIZA UN RESIDUO</div>
+          <div class="hero-title">¿Qué puedes crear hoy?</div>
+          <p class="hero-text">Toma una foto o selecciona una imagen para descubrir qué puedes construir con ella.</p>
+          <button class="btn-start-analyze" onclick="App.goAnalizar()">Analizar objeto</button>
+        </div>
+
+        <p class="section-label">🌎 Tu impacto hasta ahora</p>
+        <div class="impact-strip" id="home-impact-strip"></div>
+
+        <p class="section-label">Explorar IDEAR TACAR</p>
+        <div class="quick-grid">
+          <button class="quick-btn" onclick="Screens.open('retos')"><span class="q-emoji">🏆</span><span class="q-label">Retos<br>ecológicos</span></button>
+          <button class="quick-btn" onclick="Screens.open('planeta')"><span class="q-emoji">🌎</span><span class="q-label">Planeta<br>Vivo</span></button>
+          <button class="quick-btn" onclick="Screens.open('mapa')"><span class="q-emoji">📍</span><span class="q-label">EcoMapa</span></button>
+          <button class="quick-btn" onclick="Screens.open('emprende')"><span class="q-emoji">💰</span><span class="q-label">EcoEmprende</span></button>
+          <button class="quick-btn" onclick="Screens.open('antesdespues')"><span class="q-emoji">📸</span><span class="q-label">Antes /<br>Después</span></button>
+          <button class="quick-btn" onclick="App.switchTab('noticias')"><span class="q-emoji">📰</span><span class="q-label">EcoFeed</span></button>
+        </div>
+
+        <p class="section-label">Tus últimos proyectos</p>
+        <div id="home-projects" class="proj-scroll"></div>
+      </section>
+
+      <!-- ===================== TAB NOTICIAS ===================== -->
+      <section id="tab-noticias" class="tab-content hidden" aria-labelledby="noticias-h1">
+        <div class="tab-header">
+          <h1 id="noticias-h1">📰 Noticias</h1>
+          <p>Lo último en sostenibilidad y reciclaje</p>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <label for="news-search" class="hidden">Buscar noticias</label>
+          <input type="text" id="news-search" placeholder="Buscar noticias..." oninput="Noticias.onSearch(this.value)">
+        </div>
+        <div class="cat-chip-row" id="news-cats" role="tablist" aria-label="Categorías de noticias"></div>
+        <p class="source-note">Contenido informativo local incluido en la app — preparado para conectarse a una fuente de noticias real más adelante; no representa datos en tiempo real.</p>
+        <div id="news-list"></div>
+      </section>
+
+      <!-- ===================== TAB TRANSFORMAR ===================== -->
+      <section id="tab-transformar" class="tab-content hidden" aria-labelledby="transformar-h1">
+        <div class="tab-header">
+          <h1 id="transformar-h1">♻️ Transformar</h1>
+          <p>Fotografía tus residuos y descubre qué puedes crear</p>
+        </div>
+
+        <div class="subtab-row" role="tablist" aria-label="Secciones de Transformar">
+          <button class="subtab-btn active" id="subtab-nuevo" role="tab" aria-selected="true" onclick="Idear.showSub('nuevo')">Nueva idea</button>
+          <button class="subtab-btn" id="subtab-historial" role="tab" aria-selected="false" onclick="Idear.showSub('historial')">Historial</button>
+          <button class="subtab-btn" id="subtab-favoritos" role="tab" aria-selected="false" onclick="Idear.showSub('favoritos')">Favoritos</button>
+        </div>
+
+        <!-- --- NUEVO --- -->
+        <div id="sub-nuevo">
+          <div id="upload-ui">
+            <div class="hero-eyebrow" style="color:var(--petrol); margin-bottom:10px;">🔎 ECO SCAN</div>
+            <div class="upload-zone" role="button" tabindex="0" aria-label="Tomar fotografía con la cámara" onclick="document.getElementById('cam-input').click()" onkeydown="Idear.keyClick(event,'cam-input')">
+              <div class="upload-circle">📷</div>
+              <div class="upload-title">Tomar fotografía</div>
+              <div class="upload-sub">Usa la cámara de tu dispositivo</div>
+            </div>
+            <div class="upload-zone green" role="button" tabindex="0" aria-label="Subir imagen desde la galería" onclick="document.getElementById('file-input').click()" onkeydown="Idear.keyClick(event,'file-input')">
+              <div class="upload-circle">⬆️</div>
+              <div class="upload-title">Subir de galería</div>
+              <div class="upload-sub">JPG, PNG o WEBP — cualquier residuo reutilizable</div>
+            </div>
+            <input id="cam-input" type="file" accept="image/*" capture="environment" class="hidden" onchange="Idear.handleFile(this)">
+            <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="Idear.handleFile(this)">
+
+            <p class="section-label" style="margin-top:18px;">Materiales sugeridos</p>
+            <div class="tags-grid">
+              <span class="pill pill-blue">📦 Cartón</span>
+              <span class="pill pill-green">🧴 Botellas</span>
+              <span class="pill pill-gray">🥫 Latas</span>
+              <span class="pill pill-blue">📰 Papel</span>
+              <span class="pill pill-green">🪡 Ropa</span>
+              <span class="pill pill-gray">🪵 Madera</span>
+              <span class="pill pill-cream">🍶 Vidrio</span>
+              <span class="pill pill-blue">🔌 Electrónicos</span>
+            </div>
+          </div>
+
+          <div id="preview-wrap" class="hidden">
+            <img id="preview-img" src="" alt="Vista previa del material subido">
+            <div id="preview-label">📸 Elige la categoría del material</div>
+            <div id="error-box" class="error-box hidden" role="alert"></div>
+
+            <div class="cat-grid" id="cat-grid" role="group" aria-label="Categoría del material"></div>
+
+            <button class="btn-primary" id="btn-generar" onclick="Idear.generar()" disabled>✨ Analizar objeto</button>
+            <br><br>
+            <button class="btn-ghost" onclick="Idear.reset()">Elegir otra imagen</button>
+          </div>
+
+          <div id="loading-screen">
+            <div class="spin-wrap">
+              <div class="spin-outer"></div>
+              <div class="spin-inner"></div>
+              <div class="spin-center">✨</div>
+            </div>
+            <div>
+              <div class="loading-title" id="loading-title">🔍 Identificando objeto...</div>
+              <div class="loading-sub" id="loading-sub-text">Procesando en modo local, sin conexión a servidores externos</div>
+            </div>
+          </div>
+
+          <!-- --- 3 IDEAS INTELIGENTES: elegir --- -->
+          <div id="ideas3-screen" style="display:none;">
+            <p class="section-label">💡 Tres ideas para tu material — elige una</p>
+            <div id="ideas3-list"></div>
+            <button class="btn-ghost" onclick="Idear.reset()">Elegir otra imagen</button>
+          </div>
+
+          <div id="result-screen">
+            <div class="result-hero">
+              <img id="result-img" src="" class="result-hero-img" alt="">
+              <div class="result-hero-overlay"></div>
+              <button class="back-btn" onclick="Idear.backToChoices()">← Ideas</button>
+              <div class="result-hero-text">
+                <span class="local-badge" id="result-source-badge">🔒 Modo local</span>
+                <h2 id="r-idea"></h2>
+                <p id="r-desc"></p>
+              </div>
+            </div>
+
+            <p class="section-label">🔎 Objeto identificado</p>
+            <div class="id-box">
+              <div class="id-emoji" id="id-emoji" aria-hidden="true">♻️</div>
+              <div>
+                <div class="id-name" id="id-name"></div>
+                <div class="id-conf" id="id-conf"></div>
+              </div>
+            </div>
+
+            <div class="stats-row">
+              <div class="stat-card"><div class="stat-icon">⏱</div><div class="stat-val" id="r-tiempo"></div></div>
+              <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" id="r-dif"></div></div>
+              <div class="stat-card"><div class="stat-icon">🏷️</div><div class="stat-val" id="r-cat"></div></div>
+            </div>
+
+            <p class="section-label">🧰 Materiales que ya tienes</p>
+            <div id="r-materiales" class="tags-grid" style="margin-bottom:16px;"></div>
+
+            <div id="r-adicionales-wrap" style="margin-bottom:16px;">
+              <p class="section-label">🔧 Materiales adicionales que necesitas</p>
+              <div id="r-adicionales" class="tags-grid"></div>
+            </div>
+
+            <p class="section-label">📋 Cómo hacerlo (toca cada paso para marcarlo)</p>
+            <div id="r-pasos" class="steps-list" style="margin-bottom:16px;"></div>
+
+            <div class="eco-box">
+              <div class="eco-box-icon">🌱</div>
+              <div>
+                <div class="eco-box-title">Beneficio ambiental</div>
+                <div class="eco-box-text" id="r-eco"></div>
+              </div>
+            </div>
+
+            <p class="section-label">🌎 Tu impacto</p>
+            <div class="impact-box">
+              <div class="impact-box-title">Al completar este proyecto</div>
+              <div class="impact-row">
+                <div class="impact-num"><div class="n">1</div><div class="t">objeto reutilizado</div></div>
+                <div class="impact-num"><div class="n" id="r-impact-g"></div><div class="t">residuos evitados (est.)</div></div>
+              </div>
+              <div class="impact-note">Estimación aproximada según la categoría del material — no proviene de una medición real.</div>
+            </div>
+
+            <p class="section-label">💡 También podrías crear</p>
+            <div id="alt-scroll" class="alt-scroll"></div>
+
+            <div class="result-actions">
+              <button class="btn-green" id="btn-completar" onclick="Idear.completar()">✅ Marcar como completado</button>
+              <button class="icon-toggle" id="btn-favorito" aria-label="Guardar en favoritos" aria-pressed="false" onclick="Idear.toggleFavoritoActual()">🤍</button>
+            </div>
+            <div class="share-row">
+              <button class="btn-secondary" onclick="Idear.compartir()">🔗 Copiar</button>
+              <button class="btn-secondary" onclick="Idear.publicarEnComunidad()">♻️ Publicar en Comunidad</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- --- HISTORIAL --- -->
+        <div id="sub-historial" class="hidden">
+          <div id="historial-list"></div>
+          <button class="btn-ghost hidden" id="btn-limpiar-historial" onclick="Idear.limpiarHistorial()">🗑️ Limpiar historial</button>
+        </div>
+
+        <!-- --- FAVORITOS --- -->
+        <div id="sub-favoritos" class="hidden">
+          <div id="favoritos-list"></div>
+        </div>
+      </section>
+
+      <!-- ===================== TAB COMUNIDAD ===================== -->
+      <section id="tab-comunidad" class="tab-content hidden" aria-labelledby="comunidad-h1">
+        <div class="comm-hero">
+          <h1 id="comunidad-h1">🌎 Comunidad</h1>
+          <p>Inspírate. Comparte. Transforma.</p>
+        </div>
+        <p class="community-note">Comunidad local: tus publicaciones y las de ejemplo se guardan solo en este dispositivo, no en un servidor compartido.</p>
+
+        <p class="section-label">🏆 Creadores destacados</p>
+        <div class="creators-scroll" id="creators-scroll"></div>
+
+        <div class="compose-card">
+          <label for="compose-text" class="hidden">Escribe una publicación</label>
+          <textarea class="compose-textarea" id="compose-text" placeholder="¿Qué creaste hoy? Comparte tu experiencia..." maxlength="280" oninput="Comunidad.onComposeInput()"></textarea>
+          <div class="compose-footer">
+            <button class="btn-post" id="btn-post" onclick="Comunidad.submitPost()" disabled>Publicar</button>
+          </div>
+        </div>
+        <div id="posts-list"></div>
+      </section>
+
+      <!-- ===================== TAB PERFIL ===================== -->
+      <section id="tab-perfil" class="tab-content hidden" aria-labelledby="perfil-h1">
+        <div class="tab-header">
+          <h1 id="perfil-h1">👤 Perfil</h1>
+          <p>Tu impacto 🌎</p>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-top">
+            <div class="profile-avatar" id="profile-avatar" role="button" tabindex="0" aria-label="Cambiar avatar" onclick="Perfil.editAvatar()">🧭</div>
+            <div>
+              <div class="profile-name" id="profile-name" role="button" tabindex="0" aria-label="Editar nombre" onclick="Perfil.editName()">Tu perfil eco</div>
+              <div class="profile-level" id="profile-level">Explorador</div>
+              <div class="profile-since" id="profile-since"></div>
+            </div>
+          </div>
+          <div class="xp-label"><span>Progreso al siguiente nivel</span><span id="xp-text">0 / 150 pts</span></div>
+          <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+        </div>
+
+        <div class="stats-3">
+          <div class="stat3"><div class="stat3-icon">🎨</div><div class="stat3-val" id="stat-proyectos">0</div><div class="stat3-label">Proyectos</div></div>
+          <div class="stat3"><div class="stat3-icon">♻️</div><div class="stat3-val" id="stat-completados">0</div><div class="stat3-label">Reutilizados</div></div>
+          <div class="stat3"><div class="stat3-icon">🌍</div><div class="stat3-val" id="stat-kg">0 kg</div><div class="stat3-label">Residuos evitados</div></div>
+        </div>
+
+        <p class="section-label">🏅 Insignias</p>
+        <div class="badges-grid" id="badges-grid"></div>
+
+        <p class="section-label">⚙️ Ajustes</p>
+        <div class="card" style="margin-bottom:12px;">
+          <div class="settings-row">
+            <span>Modo oscuro</span>
+            <label class="switch">
+              <input type="checkbox" id="dark-switch" onchange="App.setTheme(this.checked ? 'dark' : 'light')" aria-label="Activar modo oscuro">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+          <div class="settings-row" style="border-bottom:none;">
+            <span>Datos guardados</span>
+            <span id="storage-note" style="color:var(--text-faint); font-size:12px;">Solo en este dispositivo</span>
+          </div>
+        </div>
+
+        <p class="section-label">🤖 IA en la nube (opcional)</p>
+        <div class="card" style="margin-bottom:12px;">
+          <div class="settings-row">
+            <span>Usar IA en la nube si está configurada</span>
+            <label class="switch">
+              <input type="checkbox" id="ai-switch" onchange="CloudAI.setEnabled(this.checked)" aria-label="Activar IA en la nube">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+          <label for="ai-endpoint-input" style="display:block; font-size:12px; color:var(--text-muted); margin:10px 0 6px;">Dirección de tu Worker (Cloudflare)</label>
+          <input type="url" id="ai-endpoint-input" placeholder="https://tu-worker.workers.dev" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text-strong); font-size:13px; margin-bottom:10px;">
+          <div style="display:flex; gap:8px;">
+            <button class="btn-secondary" style="padding:10px;" onclick="CloudAI.saveEndpoint()">💾 Guardar</button>
+            <button class="btn-secondary" style="padding:10px;" onclick="CloudAI.testConnection()">🔌 Probar conexión</button>
+          </div>
+          <p id="ai-status" style="font-size:11.5px; color:var(--text-faint); margin:10px 0 0;">Sin configurar todavía — la app sigue funcionando en modo local.</p>
+        </div>
+
+        <p class="arch-note">Este perfil funciona con almacenamiento local. La IA en la nube es opcional: si no la configuras, o si falla, IDEAR TACAR sigue generando ideas con su banco local sin interrumpirse.</p>
+
+        <p class="section-label">👁️ Vista previa creativa con IA (opcional)</p>
+        <div class="card" style="margin-bottom:12px;">
+          <p style="font-size:12px; color:var(--text-muted); margin:0 0 8px;">Cuando conectes un endpoint de generación de imágenes en tu propio backend, IDEAR TACAR podrá mostrar aquí una representación visual de cómo podría verse tu proyecto terminado. Por ahora no hay ningún servicio conectado, así que esta función permanece desactivada — no se simula ninguna imagen.</p>
+          <input type="url" id="ai-image-endpoint-input" placeholder="https://tu-worker.workers.dev/imagen" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text-strong); font-size:13px; margin-bottom:10px;">
+          <button class="btn-secondary" style="padding:10px;" onclick="CloudAI.saveImageEndpoint()">💾 Guardar dirección</button>
+          <p id="ai-image-status" style="font-size:11.5px; color:var(--text-faint); margin:10px 0 0;">Sin configurar — la vista previa creativa permanece desactivada.</p>
+        </div>
+
+        <p class="section-label">📤 Datos y privacidad</p>
+        <div class="card" style="margin-bottom:12px;">
+          <button class="btn-secondary" style="margin-bottom:8px;" onclick="App.exportarDatos()">⬇️ Exportar mis datos (JSON)</button>
+          <p style="font-size:11.5px; color:var(--text-faint); margin:0;">Descarga una copia de tu historial, favoritos, XP y publicaciones guardadas en este dispositivo.</p>
+        </div>
+
+        <button class="danger-btn" onclick="App.confirmarBorrarDatos()">🗑️ Borrar todos mis datos</button>
+      </section>
+
+    </div><!-- end #content -->
+
+    <nav id="bottomnav" aria-label="Navegación principal">
+      <button class="nav-btn" id="nav-inicio" aria-current="page" onclick="App.switchTab('inicio')">
+        <span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-label">Inicio</span>
+      </button>
+      <button class="nav-btn" id="nav-noticias" onclick="App.switchTab('noticias')">
+        <span class="nav-icon" aria-hidden="true">📰</span><span class="nav-label">Noticias</span>
+      </button>
+      <button class="nav-btn nav-center" id="nav-transformar" onclick="App.switchTab('transformar')">
+        <span class="nav-icon-wrap"><span class="nav-icon" aria-hidden="true">♻️</span></span><span class="nav-label">Transformar</span>
+      </button>
+      <button class="nav-btn" id="nav-comunidad" onclick="App.switchTab('comunidad')">
+        <span class="nav-icon" aria-hidden="true">🌎</span><span class="nav-label">Comunidad</span>
+      </button>
+      <button class="nav-btn" id="nav-perfil" onclick="App.switchTab('perfil')">
+        <span class="nav-icon" aria-hidden="true">👤</span><span class="nav-label">Perfil</span>
+      </button>
+    </nav>
+
+  </div><!-- end #main-app -->
+
+  <!-- ============ SCREEN: RETOS ECOLÓGICOS ============ -->
+  <div id="screen-retos" class="screen-overlay hidden">
+    <div class="screen-head">
+      <button class="screen-back" onclick="Screens.close('retos')" aria-label="Volver">←</button>
+      <div><div class="screen-head-title">🏆 Retos ecológicos</div><div class="screen-head-sub">Completa retos y gana XP e insignias</div></div>
+    </div>
+    <div class="screen-body">
+      <p class="section-label">Diarios</p>
+      <div id="retos-diarios"></div>
+      <p class="section-label">Semanales</p>
+      <div id="retos-semanales"></div>
+      <p class="section-label">Especiales</p>
+      <div id="retos-especiales"></div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: PLANETA VIVO ============ -->
+  <div id="screen-planeta" class="screen-overlay hidden">
+    <div class="screen-head">
+      <button class="screen-back" onclick="Screens.close('planeta')" aria-label="Volver">←</button>
+      <div><div class="screen-head-title">🌎 Planeta Vivo</div><div class="screen-head-sub">El impacto acumulado de tus proyectos</div></div>
+    </div>
+    <div class="screen-body">
+      <div class="planet-hero">
+        <div class="p-big" id="planet-kg">0 kg</div>
+        <div class="p-sub">residuos reutilizados (estimación)</div>
+      </div>
+      <div class="card">
+        <p class="section-label">📈 Proyectos por mes</p>
+        <div class="chart-bars" id="planet-chart"></div>
+      </div>
+      <div class="card">
+        <p class="section-label">🏷️ Materiales más usados</p>
+        <div id="planet-cats"></div>
+      </div>
+      <div class="impact-strip" id="planet-strip" style="margin-top:14px;"></div>
+      <p class="impact-note">Los cálculos ambientales son estimaciones aproximadas basadas en la categoría de cada material, no mediciones reales.</p>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: ECOMAPA ============ -->
+  <div id="screen-mapa" class="screen-overlay hidden">
+    <div class="screen-head">
+      <button class="screen-back" onclick="Screens.close('mapa')" aria-label="Volver">←</button>
+      <div><div class="screen-head-title">📍 EcoMapa</div><div class="screen-head-sub">Puntos de reciclaje y campañas cercanas</div></div>
+    </div>
+    <div class="screen-body">
+      <div class="map-placeholder">
+        <div class="m-emoji">🗺️</div>
+        <p style="font-size:13px; font-weight:700; color:var(--text-strong); margin:0 0 6px;">Mapa listo para conectarse</p>
+        <p style="font-size:12px; color:var(--text-muted); margin:0;">Esta sección está preparada para integrar un proveedor de mapas real (Google Maps, Mapbox u OpenStreetMap) con geolocalización. Todavía no hay una fuente de datos de puntos de reciclaje conectada, así que no se muestran ubicaciones inventadas.</p>
+      </div>
+      <div class="loc-chip" id="mapa-loc-chip">📡 Tu ubicación aún no se ha consultado.</div>
+      <button class="btn-secondary" style="margin-bottom:10px;" onclick="EcoMapa.getLocation()">📡 Usar mi ubicación</button>
+      <button class="btn-primary" id="mapa-search-btn" disabled onclick="EcoMapa.openMaps()">🔎 Buscar puntos de reciclaje cerca</button>
+      <p class="arch-note">Al tocar "Buscar", se abrirá tu aplicación de mapas con una búsqueda real de puntos de reciclaje alrededor de tu ubicación — IDEAR TACAR no guarda ni transmite tu ubicación a ningún servidor propio.</p>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: ECOEMPRENDE ============ -->
+  <div id="screen-emprende" class="screen-overlay hidden">
+    <div class="screen-head">
+      <button class="screen-back" onclick="Screens.close('emprende')" aria-label="Volver">←</button>
+      <div><div class="screen-head-title">💰 EcoEmprende</div><div class="screen-head-sub">Convierte un proyecto en una idea de negocio</div></div>
+    </div>
+    <div class="screen-body">
+      <label class="field-label" for="biz-project">Proyecto base</label>
+      <select class="field-input" id="biz-project"></select>
+
+      <label class="field-label" for="biz-audience">Público objetivo</label>
+      <input class="field-input" id="biz-audience" placeholder="Ej: vecinos, tienda local, redes sociales">
+
+      <label class="field-label" for="biz-cost">Costo estimado de materiales (tu moneda)</label>
+      <input class="field-input" id="biz-cost" type="number" min="0" step="0.1" placeholder="Ej: 3.5">
+
+      <label class="field-label" for="biz-hours">Horas de trabajo estimadas</label>
+      <input class="field-input" id="biz-hours" type="number" min="0" step="0.5" placeholder="Ej: 1.5">
+
+      <button class="btn-primary" onclick="EcoEmprende.calcular()">✨ Generar plan estimado</button>
+      <div id="biz-result"></div>
+      <p class="impact-note" style="margin-top:12px;">Todos los valores económicos son estimaciones orientativas calculadas localmente, no datos de mercado reales.</p>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: ANTES / DESPUÉS ============ -->
+  <div id="screen-antesdespues" class="screen-overlay hidden">
+    <div class="screen-head">
+      <button class="screen-back" onclick="Screens.close('antesdespues')" aria-label="Volver">←</button>
+      <div><div class="screen-head-title">📸 Antes → Después</div><div class="screen-head-sub">Muestra tu transformación</div></div>
+    </div>
+    <div class="screen-body">
+      <div class="ad-pair">
+        <div class="ad-slot" onclick="document.getElementById('ad-antes-input').click()">
+          <span class="ad-tag">ANTES</span>
+          <img id="ad-antes-img" class="hidden" alt="Foto antes">
+          <span id="ad-antes-placeholder">📷<br><span style="font-size:11px;">Toca para subir</span></span>
+        </div>
+        <div class="ad-slot" onclick="document.getElementById('ad-despues-input').click()">
+          <span class="ad-tag">DESPUÉS</span>
+          <img id="ad-despues-img" class="hidden" alt="Foto después">
+          <span id="ad-despues-placeholder">✨<br><span style="font-size:11px;">Toca para subir</span></span>
+        </div>
+      </div>
+      <input type="file" id="ad-antes-input" accept="image/*" class="hidden" onchange="AntesDespues.load('antes', this)">
+      <input type="file" id="ad-despues-input" accept="image/*" class="hidden" onchange="AntesDespues.load('despues', this)">
+
+      <label class="field-label" for="ad-text">Cuéntanos tu transformación</label>
+      <textarea class="field-input" id="ad-text" rows="3" placeholder="¿Qué era antes y en qué lo convertiste?"></textarea>
+
+      <button class="btn-green" onclick="AntesDespues.guardar()">💾 Guardar transformación</button>
+      <br><br>
+      <p class="section-label">Tus transformaciones</p>
+      <div id="ad-list"></div>
+    </div>
+  </div>
+
+  <div id="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+</div><!-- end #app -->
+
+<script>
+/* ============================================================
+   IDEAR TACAR — v3.0
+   Aplicación 100% HTML/CSS/JS, sin dependencias, sin backend.
+   No usa React ni ninguna clave de API. La generación de ideas
+   funciona en modo local a partir de un banco de plantillas por
+   categoría de material. Todo dato del usuario se guarda con
+   localStorage y permanece únicamente en su dispositivo.
+
+   Arquitectura para una futura IA en la nube (documentada, no
+   implementada aquí por seguridad): el frontend nunca debe llamar
+   directamente a un proveedor de IA con una clave incrustada.
+   El flujo correcto sería:
+     Frontend -> Backend propio (guarda la clave) -> Proveedor de IA
+     -> Backend -> Frontend
+   Mientras no exista ese backend, IDEAR TACAR usa el banco local
+   de ideas para seguir siendo completamente funcional y honesto
+   sobre el origen de sus resultados.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  /* ---------- Utilidades de almacenamiento seguro ---------- */
+  var STORE = {
+    get: function (key, fallback) {
+      try {
+        var raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (e) {
+        console.warn("No se pudo leer '" + key + "'", e);
+        return fallback;
+      }
+    },
+    set: function (key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+      } catch (e) {
+        console.warn("No se pudo guardar '" + key + "'", e);
+        Toast.show("No se pudo guardar el cambio. Verifica el espacio de almacenamiento.");
+        return false;
+      }
+    }
+  };
+
+  var KEYS = {
+    theme: "it_theme", xp: "it_xp", history: "it_history", favorites: "it_favorites",
+    savedNews: "it_saved_news", posts: "it_posts", reacted: "it_reacted",
+    savedPosts: "it_saved_posts", joined: "it_joined_date",
+    aiEndpoint: "it_ai_endpoint", aiEnabled: "it_ai_enabled", aiImageEndpoint: "it_ai_image_endpoint",
+    onboardingDone: "it_onboarding_done", profileName: "it_profile_name", profileAvatar: "it_profile_avatar",
+    retosProgress: "it_retos_progress", retosWeekStart: "it_retos_week_start",
+    antesDespues: "it_antes_despues"
+  };
+
+  /* ---------- Toasts ---------- */
+  var Toast = {
+    show: function (msg) {
+      var region = document.getElementById("toast-region");
+      var el = document.createElement("div");
+      el.className = "toast";
+      el.textContent = msg;
+      region.appendChild(el);
+      setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 2700);
+    }
+  };
+
+  /* ============================================================
+     BANCO LOCAL DE IDEAS + peso aproximado por categoría (gramos)
+     ============================================================ */
+  var CATEGORIES = [
+    { id: "plastico", name: "Plástico", emoji: "🧴", avgGrams: 25 },
+    { id: "carton", name: "Cartón", emoji: "📦", avgGrams: 120 },
+    { id: "papel", name: "Papel", emoji: "📰", avgGrams: 40 },
+    { id: "vidrio", name: "Vidrio", emoji: "🍶", avgGrams: 350 },
+    { id: "metal", name: "Metal", emoji: "🔩", avgGrams: 80 },
+    { id: "latas", name: "Latas", emoji: "🥫", avgGrams: 45 },
+    { id: "ropa", name: "Ropa", emoji: "🪡", avgGrams: 200 },
+    { id: "madera", name: "Madera", emoji: "🪵", avgGrams: 500 },
+    { id: "electronicos", name: "Electrónicos", emoji: "🔌", avgGrams: 150 },
+    { id: "otros", name: "Otros", emoji: "🧩", avgGrams: 60 }
+  ];
+
+  var IDEAS = {
+    plastico: [
+      { idea: "Macetero colgante de botella PET", descripcion: "Convierte una botella en una maceta suspendida para hierbas o suculentas.", materiales_adicionales: ["Tijeras", "Cuerda", "Tierra"], pasos: ["Corta la botella por la mitad y usa la parte inferior.", "Haz pequeños agujeros en la base para drenaje.", "Perfora dos huecos laterales y pasa la cuerda para colgarla.", "Rellena con tierra y planta lo que prefieras."], dificultad: "Fácil", tiempo_estimado: "30 minutos" },
+      { idea: "Organizador modular de escritorio", descripcion: "Varias botellas cortadas se convierten en compartimentos para lápices y herramientas.", materiales_adicionales: ["Cúter", "Pegamento", "Cinta decorativa"], pasos: ["Corta 3-4 botellas a distintas alturas.", "Lija los bordes cortados para evitar filos.", "Une las botellas entre sí con pegamento resistente.", "Decora el exterior con cinta o pintura."], dificultad: "Media", tiempo_estimado: "1 hora" },
+      { idea: "Regadera casera con tapa perforada", descripcion: "La tapa de la botella perforada se convierte en un aspersor sencillo.", materiales_adicionales: ["Clavo fino", "Encendedor (para calentar el clavo)"], pasos: ["Limpia bien la botella y la tapa.", "Calienta ligeramente un clavo fino y perfora la tapa varias veces.", "Deja enfriar antes de manipular.", "Llena la botella con agua y úsala para regar plantas pequeñas."], dificultad: "Fácil", tiempo_estimado: "20 minutos" }
+    ],
+    carton: [
+      { idea: "Organizador de cajones con cartón", descripcion: "Divide cajas de cartón en compartimentos a medida para tu cajón.", materiales_adicionales: ["Regla", "Cúter", "Cinta"], pasos: ["Mide el interior del cajón.", "Corta tiras de cartón según las medidas.", "Ensambla las tiras en forma de rejilla.", "Ajusta las piezas dentro del cajón."], dificultad: "Fácil", tiempo_estimado: "40 minutos" },
+      { idea: "Casa de juegos para mascotas", descripcion: "Cajas grandes de cartón se transforman en un refugio o túnel de juego.", materiales_adicionales: ["Pintura no tóxica", "Cúter"], pasos: ["Recorta puertas y ventanas en la caja.", "Refuerza las esquinas con cinta.", "Pinta con pintura segura para mascotas.", "Une varias cajas si quieres crear un túnel."], dificultad: "Media", tiempo_estimado: "1.5 horas" },
+      { idea: "Marco de fotos de cartón grueso", descripcion: "Capas de cartón superpuestas forman un marco resistente y personalizable.", materiales_adicionales: ["Cúter", "Pegamento", "Pintura"], pasos: ["Recorta dos piezas iguales de cartón grueso.", "Corta una ventana en una de las piezas.", "Pega ambas piezas dejando un lado abierto para insertar la foto.", "Pinta o decora el marco terminado."], dificultad: "Fácil", tiempo_estimado: "45 minutos" }
+    ],
+    papel: [
+      { idea: "Libreta reciclada artesanal", descripcion: "Hojas de papel usado se convierten en una libreta con tapa reforzada.", materiales_adicionales: ["Aguja", "Hilo grueso", "Cartón para tapas"], pasos: ["Corta las hojas al mismo tamaño.", "Prepara dos tapas de cartón reciclado.", "Perfora y cose el lomo con hilo.", "Decora la portada a tu gusto."], dificultad: "Media", tiempo_estimado: "50 minutos" },
+      { idea: "Papel maché para figuras decorativas", descripcion: "Tiras de papel viejo mezcladas con engrudo crean figuras o macetas ligeras.", materiales_adicionales: ["Agua", "Harina", "Globo o molde"], pasos: ["Prepara engrudo con agua y harina.", "Remoja tiras de papel en la mezcla.", "Cubre el molde con varias capas.", "Deja secar por completo y pinta."], dificultad: "Fácil", tiempo_estimado: "2 días (incluye secado)" }
+    ],
+    vidrio: [
+      { idea: "Portavelas de frasco de vidrio", descripcion: "Frascos vacíos se transforman en portavelas decorativos.", materiales_adicionales: ["Vela pequeña", "Pintura para vidrio", "Cuerda o encaje"], pasos: ["Limpia bien el frasco.", "Pinta el exterior con motivos sencillos.", "Deja secar la pintura por completo.", "Coloca la vela en el interior."], dificultad: "Fácil", tiempo_estimado: "35 minutos" },
+      { idea: "Dispensador de jabón reutilizable", descripcion: "Un frasco de vidrio con una bomba dosificadora se convierte en dispensador.", materiales_adicionales: ["Bomba dosificadora", "Etiqueta"], pasos: ["Limpia el frasco y retira etiquetas antiguas.", "Perfora la tapa para insertar la bomba.", "Rellena con jabón líquido.", "Etiqueta el contenido."], dificultad: "Fácil", tiempo_estimado: "20 minutos" }
+    ],
+    metal: [
+      { idea: "Portalápices de lata reforzada", descripcion: "Piezas metálicas pequeñas se combinan en un soporte resistente para escritorio.", materiales_adicionales: ["Lija", "Pintura en aerosol"], pasos: ["Lija los bordes filosos.", "Limpia la superficie metálica.", "Aplica pintura en aerosol en capas finas.", "Deja secar antes de usar."], dificultad: "Media", tiempo_estimado: "1 hora" }
+    ],
+    latas: [
+      { idea: "Macetas colgantes de lata", descripcion: "Latas de conserva se convierten en pequeñas macetas para el balcón.", materiales_adicionales: ["Martillo", "Clavo", "Cuerda", "Tierra"], pasos: ["Lava bien la lata y retira bordes filosos.", "Haz agujeros de drenaje en la base.", "Perfora dos huecos laterales para la cuerda.", "Rellena con tierra y siembra."], dificultad: "Fácil", tiempo_estimado: "30 minutos" },
+      { idea: "Lámpara decorativa de lata perforada", descripcion: "Una lata perforada con patrones crea juegos de luz al colocar una vela dentro.", materiales_adicionales: ["Clavo", "Martillo", "Vela LED"], pasos: ["Congela agua dentro de la lata para que no se deforme al perforar.", "Marca un patrón de puntos en la superficie.", "Perfora con clavo y martillo siguiendo el patrón.", "Deja descongelar y coloca una vela LED dentro."], dificultad: "Media", tiempo_estimado: "45 minutos" }
+    ],
+    ropa: [
+      { idea: "Bolsa reutilizable con camiseta vieja", descripcion: "Una camiseta que ya no usas se transforma en una bolsa de tela sin costuras.", materiales_adicionales: ["Tijeras"], pasos: ["Corta las mangas y el cuello de la camiseta.", "Voltea la prenda al revés.", "Corta tiras en la parte inferior y anúdalas de dos en dos.", "Voltea la bolsa hacia el lado correcto."], dificultad: "Fácil", tiempo_estimado: "25 minutos" },
+      { idea: "Paño de limpieza a partir de tela vieja", descripcion: "Prendas de tela ya no aptas para donar se convierten en paños reutilizables.", materiales_adicionales: ["Tijeras"], pasos: ["Corta la tela en cuadrados de tamaño uniforme.", "Recorta los bordes para evitar deshilache excesivo.", "Lava los paños antes de usarlos.", "Guárdalos junto a los productos de limpieza."], dificultad: "Fácil", tiempo_estimado: "15 minutos" }
+    ],
+    madera: [
+      { idea: "Repisa flotante con madera de palet", descripcion: "Tablas de un palet desmontado se convierten en una repisa de pared.", materiales_adicionales: ["Lija", "Soportes metálicos", "Tornillos"], pasos: ["Desmonta con cuidado las tablas del palet.", "Lija toda la superficie.", "Corta al tamaño deseado.", "Instala con soportes en la pared."], dificultad: "Media", tiempo_estimado: "2 horas" }
+    ],
+    electronicos: [
+      { idea: "Organizador de cables con caja y componentes viejos", descripcion: "Restos de cajas de dispositivos y separadores internos se reutilizan para ordenar cables.", materiales_adicionales: ["Tijeras", "Etiquetas"], pasos: ["Reúne cajas pequeñas de productos electrónicos.", "Recorta divisiones internas si es necesario.", "Etiqueta cada compartimento por tipo de cable.", "Ubica el organizador cerca de tu escritorio."], dificultad: "Fácil", tiempo_estimado: "20 minutos" }
+    ],
+    otros: [
+      { idea: "Panel de corcho con tapones reciclados", descripcion: "Tapones de corcho o materiales sueltos se agrupan para crear un panel de notas.", materiales_adicionales: ["Pegamento", "Marco o base rígida"], pasos: ["Reúne suficientes tapones o piezas.", "Ordénalos sobre la base según el diseño deseado.", "Pégalos firmemente uno junto a otro.", "Deja secar antes de colgarlo."], dificultad: "Media", tiempo_estimado: "1 hora" }
+    ]
+  };
+  var ECO_TEXT = {
+    plastico: "Evita que un plástico de un solo uso termine cientos de años en un vertedero.",
+    carton: "Reduce residuos de embalaje y la demanda de pulpa de papel virgen.",
+    papel: "Da una segunda vida al papel antes de que llegue al contenedor de reciclaje.",
+    vidrio: "Extiende la vida útil del vidrio, que de otro modo tardaría siglos en degradarse.",
+    metal: "Evita que el metal termine oxidándose sin ser aprovechado.",
+    latas: "El metal reciclado así evita procesos de fundición adicionales.",
+    ropa: "Reduce el impacto textil de producir prendas o telas nuevas.",
+    madera: "Aprovecha madera que normalmente se desecha tras un solo uso logístico.",
+    electronicos: "Da un uso adicional a componentes antes de reciclarlos formalmente.",
+    otros: "Evita que materiales pequeños y diversos terminen sin aprovecharse."
+  };
+
+  /* ============================================================
+     CLOUD AI — conexión OPCIONAL a una IA real a través de un
+     backend propio del usuario (nunca se llama directo a un
+     proveedor de IA ni se guarda ninguna clave secreta aquí).
+
+     El usuario configura, en Perfil, la dirección de su propio
+     "Worker" (por ejemplo de Cloudflare) que guarda su clave de
+     Gemini de forma segura. Esta app solo conoce esa dirección
+     pública, nunca la clave. Si no está configurada, o si falla,
+     la app sigue funcionando con el banco local de ideas.
+     ============================================================ */
+  var CloudAI = {
+    init: function () {
+      var input = document.getElementById("ai-endpoint-input");
+      var endpoint = STORE.get(KEYS.aiEndpoint, "");
+      if (input) input.value = endpoint;
+      var enabled = STORE.get(KEYS.aiEnabled, false);
+      var sw = document.getElementById("ai-switch");
+      if (sw) sw.checked = enabled;
+      var imgInput = document.getElementById("ai-image-endpoint-input");
+      var imgEndpoint = STORE.get(KEYS.aiImageEndpoint, "");
+      if (imgInput) imgInput.value = imgEndpoint;
+      var imgStatus = document.getElementById("ai-image-status");
+      if (imgStatus) imgStatus.textContent = imgEndpoint ? "Guardado: " + imgEndpoint + " (aún no se activa la generación automáticamente)." : "Sin configurar — la vista previa creativa permanece desactivada.";
+      CloudAI.refreshStatus();
+    },
+    saveImageEndpoint: function () {
+      var input = document.getElementById("ai-image-endpoint-input");
+      var val = input.value.trim();
+      if (val && !/^https:\/\//i.test(val)) {
+        Toast.show("La dirección debe empezar con https://");
+        return;
+      }
+      STORE.set(KEYS.aiImageEndpoint, val);
+      var status = document.getElementById("ai-image-status");
+      status.textContent = val ? "Guardado: " + val + " (aún no se activa la generación automáticamente)." : "Sin configurar — la vista previa creativa permanece desactivada.";
+      Toast.show(val ? "Dirección guardada" : "Dirección eliminada");
+    },
+    isEnabled: function () {
+      return !!STORE.get(KEYS.aiEnabled, false) && !!STORE.get(KEYS.aiEndpoint, "");
+    },
+    setEnabled: function (val) {
+      if (val && !STORE.get(KEYS.aiEndpoint, "")) {
+        Toast.show("Primero guarda la dirección de tu Worker.");
+        document.getElementById("ai-switch").checked = false;
+        return;
+      }
+      STORE.set(KEYS.aiEnabled, val);
+      CloudAI.refreshStatus();
+      Toast.show(val ? "IA en la nube activada" : "Usando solo el modo local");
+    },
+    saveEndpoint: function () {
+      var input = document.getElementById("ai-endpoint-input");
+      var val = input.value.trim();
+      if (val && !/^https:\/\//i.test(val)) {
+        Toast.show("La dirección debe empezar con https://");
+        return;
+      }
+      STORE.set(KEYS.aiEndpoint, val);
+      CloudAI.refreshStatus();
+      Toast.show(val ? "Dirección guardada" : "Dirección eliminada");
+    },
+    refreshStatus: function () {
+      var status = document.getElementById("ai-status");
+      if (!status) return;
+      var endpoint = STORE.get(KEYS.aiEndpoint, "");
+      var enabled = STORE.get(KEYS.aiEnabled, false);
+      if (!endpoint) status.textContent = "Sin configurar todavía — la app sigue funcionando en modo local.";
+      else if (!enabled) status.textContent = "Guardada, pero desactivada. Activa el interruptor para usarla.";
+      else status.textContent = "Activa: " + endpoint;
+    },
+    testConnection: function () {
+      var endpoint = STORE.get(KEYS.aiEndpoint, "");
+      if (!endpoint) { Toast.show("Guarda primero una dirección."); return; }
+      var status = document.getElementById("ai-status");
+      status.textContent = "Probando conexión...";
+      fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ping: true }) })
+        .then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          status.textContent = "✅ Conexión correcta con tu Worker.";
+          Toast.show("Conexión exitosa");
+        })
+        .catch(function (err) {
+          console.warn("Fallo de conexión con CloudAI", err);
+          status.textContent = "❌ No se pudo conectar. Revisa la dirección y que el Worker esté desplegado.";
+          Toast.show("No se pudo conectar con la IA en la nube");
+        });
+    },
+
+    /* Valida que la respuesta de la IA tenga exactamente la forma
+       que la app espera antes de usarla. Si algo falta, rechaza. */
+    validate: function (data) {
+      if (!data || typeof data !== "object") return false;
+      var requiredStrings = ["idea", "descripcion", "dificultad", "tiempo_estimado", "beneficio_ambiental"];
+      for (var i = 0; i < requiredStrings.length; i++) {
+        if (typeof data[requiredStrings[i]] !== "string" || !data[requiredStrings[i]].trim()) return false;
+      }
+      if (!Array.isArray(data.pasos) || !data.pasos.length) return false;
+      if (!Array.isArray(data.materiales_adicionales)) return false;
+      return true;
+    },
+
+    /* Envía la imagen y la categoría al Worker del usuario y
+       devuelve una Promise con el resultado ya validado. */
+    analyze: function (imageDataUrl, categoryId, categoryName) {
+      var endpoint = STORE.get(KEYS.aiEndpoint, "");
+      return fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: imageDataUrl, categoryId: categoryId, categoryName: categoryName })
+      }).then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      }).then(function (data) {
+        if (!CloudAI.validate(data)) throw new Error("Respuesta de la IA con formato inesperado");
+        return data;
+      });
+    }
+  };
+
+  /* ============================================================
+     APP — estado global, splash, navegación, tema, XP
+     ============================================================ */
+  var LEVELS = [
+    { name: "Explorador", emoji: "🧭", min: 0 },
+    { name: "Reutilizador", emoji: "🔄", min: 150 },
+    { name: "Creador", emoji: "🎨", min: 400 },
+    { name: "Eco-Innovador", emoji: "🌎", min: 900 },
+    { name: "Agente de Cambio", emoji: "🦸", min: 1800 }
+  ];
+
+  var App = {
+    start: function () {
+      document.getElementById("splash").style.display = "none";
+      var main = document.getElementById("main-app");
+      main.classList.remove("hidden");
+      main.style.display = "flex";
+      var isFirstTime = !STORE.get(KEYS.joined, null);
+      if (isFirstTime) STORE.set(KEYS.joined, new Date().toISOString());
+      Idear.init();
+      Noticias.init();
+      Comunidad.init();
+      Perfil.render();
+      Inicio.render();
+      CloudAI.init();
+      Retos.init();
+      EcoMapa.init();
+      EcoEmprende.init();
+      AntesDespues.init();
+      App.renderXP();
+      if (isFirstTime || !STORE.get(KEYS.onboardingDone, false)) Onboarding.start();
+    },
+
+    switchTab: function (tab) {
+      ["inicio", "noticias", "transformar", "comunidad", "perfil"].forEach(function (t) {
+        document.getElementById("tab-" + t).classList.add("hidden");
+        document.getElementById("nav-" + t).removeAttribute("aria-current");
+      });
+      document.getElementById("tab-" + tab).classList.remove("hidden");
+      document.getElementById("nav-" + tab).setAttribute("aria-current", "page");
+      if (tab === "perfil") Perfil.render();
+      if (tab === "inicio") Inicio.render();
+      window.scrollTo(0, 0);
+    },
+
+    goAnalizar: function () {
+      App.switchTab("transformar");
+      Idear.showSub("nuevo");
+    },
+
+    /* ---- Tema oscuro ---- */
+    initTheme: function () {
+      var saved = STORE.get(KEYS.theme, null);
+      var theme = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      App.setTheme(theme, true);
+    },
+    toggleTheme: function () {
+      var current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+      App.setTheme(current === "dark" ? "light" : "dark");
+    },
+    setTheme: function (theme, silent) {
+      document.documentElement.setAttribute("data-theme", theme);
+      STORE.set(KEYS.theme, theme);
+      document.getElementById("theme-toggle").textContent = theme === "dark" ? "☀️" : "🌙";
+      var sw = document.getElementById("dark-switch");
+      if (sw) sw.checked = theme === "dark";
+      if (!silent) Toast.show(theme === "dark" ? "Modo oscuro activado" : "Modo claro activado");
+    },
+
+    /* ---- XP / niveles ---- */
+    addXP: function (amount, reason) {
+      var xp = STORE.get(KEYS.xp, 0) + amount;
+      STORE.set(KEYS.xp, xp);
+      App.renderXP();
+      if (reason) Toast.show("+" + amount + " XP · " + reason);
+    },
+    getLevel: function () {
+      var xp = STORE.get(KEYS.xp, 0);
+      var current = LEVELS[0], next = null;
+      for (var i = 0; i < LEVELS.length; i++) {
+        if (xp >= LEVELS[i].min) current = LEVELS[i];
+        else { next = LEVELS[i]; break; }
+      }
+      return { xp: xp, current: current, next: next };
+    },
+    renderXP: function () {
+      var pts = STORE.get(KEYS.xp, 0);
+      var el = document.getElementById("topbar-pts");
+      if (el) el.textContent = "⚡ " + pts + " pts";
+    },
+
+    confirmarBorrarDatos: function () {
+      if (confirm("¿Borrar todo tu progreso, historial, favoritos y publicaciones guardadas en este dispositivo? Esta acción no se puede deshacer.")) {
+        Object.keys(KEYS).forEach(function (k) { try { localStorage.removeItem(KEYS[k]); } catch (e) {} });
+        try { localStorage.removeItem("it_retos_last_day"); } catch (e) {}
+        Toast.show("Datos borrados. Reiniciando IDEAR TACAR...");
+        setTimeout(function () { location.reload(); }, 900);
+      }
+    },
+
+    exportarDatos: function () {
+      var data = {};
+      Object.keys(KEYS).forEach(function (k) { data[k] = STORE.get(KEYS[k], null); });
+      data.exportedAt = new Date().toISOString();
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "ideartacar-datos.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+      Toast.show("Datos exportados");
+    }
+  };
+
+  /* ============================================================
+     INICIO — bienvenida, impacto resumido, últimos proyectos
+     ============================================================ */
+  var Inicio = {
+    render: function () {
+      var history = STORE.get(KEYS.history, []);
+      var completados = history.filter(function (h) { return h.completed; }).length;
+      var kg = Idear.calcKg(history);
+
+      var strip = document.getElementById("home-impact-strip");
+      strip.innerHTML =
+        '<div class="impact-chip"><div class="v">' + history.length + '</div><div class="l">Proyectos</div></div>' +
+        '<div class="impact-chip"><div class="v">' + completados + '</div><div class="l">Reutilizados</div></div>' +
+        '<div class="impact-chip"><div class="v">' + kg + ' kg</div><div class="l">Residuos evitados</div></div>';
+
+      var wrap = document.getElementById("home-projects");
+      wrap.innerHTML = "";
+      if (!history.length) {
+        wrap.innerHTML = '<div class="empty-state" style="width:100%;">Aún no tienes proyectos. ¡Analiza tu primer objeto! ♻️</div>';
+        return;
+      }
+      history.slice(0, 8).forEach(function (h) {
+        var div = document.createElement("div");
+        div.className = "proj-card";
+        div.tabIndex = 0;
+        div.setAttribute("role", "button");
+        div.innerHTML = '<img src="" alt=""><div class="p-body"><div class="p-title"></div><div class="p-meta"></div><div class="p-xp"></div></div>';
+        div.querySelector("img").src = h.image;
+        div.querySelector(".p-title").textContent = h.idea;
+        div.querySelector(".p-meta").textContent = h.dificultad + " · " + h.tiempo_estimado;
+        div.querySelector(".p-xp").textContent = h.completed ? "✅ Completado" : "+50 XP";
+        var open = function () { Idear.openHistItem(h); App.switchTab("transformar"); };
+        div.onclick = open;
+        div.onkeydown = function (e) { if (e.key === "Enter") open(); };
+        wrap.appendChild(div);
+      });
+    }
+  };
+
+  /* ============================================================
+     IDEAR / TRANSFORMAR
+     ============================================================ */
+  var LOADING_STAGES = [
+    "🔍 Identificando objeto...",
+    "♻️ Analizando materiales...",
+    "💡 Buscando posibilidades...",
+    "🌱 Calculando impacto ambiental...",
+    "✨ Preparando tu idea..."
+  ];
+
+  var Idear = {
+    imageDataUrl: null,
+    selectedCategory: null,
+    currentResult: null,
+
+    calcKg: function (history) {
+      var grams = 0;
+      history.forEach(function (h) {
+        var cat = CATEGORIES.find(function (c) { return c.id === h.categoryId; });
+        grams += cat ? cat.avgGrams : 60;
+      });
+      return (grams / 1000).toFixed(1);
+    },
+
+    init: function () {
+      var grid = document.getElementById("cat-grid");
+      grid.innerHTML = "";
+      CATEGORIES.forEach(function (c) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "cat-btn";
+        btn.id = "cat-" + c.id;
+        btn.setAttribute("aria-pressed", "false");
+        btn.innerHTML = '<span class="cat-emoji" aria-hidden="true">' + c.emoji + '</span><span class="cat-name">' + c.name + '</span>';
+        btn.onclick = function () { Idear.selectCategory(c.id); };
+        grid.appendChild(btn);
+      });
+      Idear.renderHistorial();
+      Idear.renderFavoritos();
+    },
+
+    keyClick: function (evt, inputId) {
+      if (evt.key === "Enter" || evt.key === " ") { evt.preventDefault(); document.getElementById(inputId).click(); }
+    },
+
+    showSub: function (name) {
+      ["nuevo", "historial", "favoritos"].forEach(function (s) {
+        document.getElementById("sub-" + s).classList.toggle("hidden", s !== name);
+        document.getElementById("subtab-" + s).classList.toggle("active", s === name);
+        document.getElementById("subtab-" + s).setAttribute("aria-selected", s === name ? "true" : "false");
+      });
+      if (name === "historial") Idear.renderHistorial();
+      if (name === "favoritos") Idear.renderFavoritos();
+    },
+
+    handleFile: function (input) {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      var validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+      if (validTypes.indexOf(file.type) === -1 && !file.type.startsWith("image/")) {
+        Toast.show("Formato no compatible. Usa JPG, PNG o WEBP.");
+        return;
+      }
+      if (file.size > 12 * 1024 * 1024) {
+        Toast.show("La imagen es muy grande (máx. 12 MB). Elige una más liviana.");
+        return;
+      }
+      ImageUtil.compress(file, 900, 0.72).then(function (dataUrl) {
+        Idear.imageDataUrl = dataUrl;
+        Idear.imageMime = "image/jpeg";
+        document.getElementById("preview-img").src = Idear.imageDataUrl;
+        document.getElementById("upload-ui").classList.add("hidden");
+        document.getElementById("preview-wrap").classList.remove("hidden");
+        document.getElementById("error-box").classList.add("hidden");
+        Toast.show("Imagen cargada");
+      }).catch(function () {
+        Toast.show("No se pudo leer la imagen. Intenta con otro archivo.");
+      });
+    },
+
+    selectCategory: function (id) {
+      Idear.selectedCategory = id;
+      CATEGORIES.forEach(function (c) {
+        var btn = document.getElementById("cat-" + c.id);
+        var active = c.id === id;
+        btn.classList.toggle("selected", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+      document.getElementById("btn-generar").disabled = false;
+    },
+
+    reset: function () {
+      Idear.imageDataUrl = null;
+      Idear.selectedCategory = null;
+      Idear.currentResult = null;
+      Idear.threeResults = null;
+      document.getElementById("upload-ui").classList.remove("hidden");
+      document.getElementById("preview-wrap").classList.add("hidden");
+      document.getElementById("loading-screen").style.display = "none";
+      document.getElementById("ideas3-screen").style.display = "none";
+      document.getElementById("result-screen").style.display = "none";
+      document.getElementById("cam-input").value = "";
+      document.getElementById("file-input").value = "";
+      document.getElementById("btn-generar").disabled = true;
+      CATEGORIES.forEach(function (c) {
+        var btn = document.getElementById("cat-" + c.id);
+        btn.classList.remove("selected");
+        btn.setAttribute("aria-pressed", "false");
+      });
+    },
+
+    generar: function () {
+      if (!Idear.imageDataUrl || !Idear.selectedCategory) return;
+      document.getElementById("preview-wrap").classList.add("hidden");
+      document.getElementById("loading-screen").style.display = "flex";
+      document.getElementById("result-screen").style.display = "none";
+
+      var stageEl = document.getElementById("loading-title");
+      var i = 0;
+      stageEl.textContent = LOADING_STAGES[0];
+      var interval = setInterval(function () {
+        i++;
+        if (i < LOADING_STAGES.length) stageEl.textContent = LOADING_STAGES[i];
+      }, 420);
+
+      var catInfo = CATEGORIES.find(function (c) { return c.id === Idear.selectedCategory; });
+
+      var finishThree = function (results) {
+        clearInterval(interval);
+        document.getElementById("loading-screen").style.display = "none";
+        Idear.threeResults = results;
+        Idear.showIdeas3(results);
+      };
+      var fail = function (msg) {
+        clearInterval(interval);
+        document.getElementById("loading-screen").style.display = "none";
+        document.getElementById("preview-wrap").classList.remove("hidden");
+        var eb = document.getElementById("error-box");
+        eb.textContent = msg;
+        eb.classList.remove("hidden");
+      };
+
+      var buildLocalThree = function () {
+        var trio = Idear.pickThree(Idear.selectedCategory);
+        return trio.map(function (entry) {
+          var r = Idear.buildResult(entry.template, catInfo);
+          r.tipo = entry.tipo;
+          return r;
+        });
+      };
+
+      var localFallback = function () {
+        try {
+          finishThree(buildLocalThree());
+        } catch (err) {
+          console.error(err);
+          fail("No pudimos generar las ideas. Intenta nuevamente con otra imagen o categoría.");
+        }
+      };
+
+      if (CloudAI.isEnabled()) {
+        CloudAI.analyze(Idear.imageDataUrl, catInfo.id, catInfo.name).then(function (data) {
+          data.source = "cloud";
+          var cloudResult = Idear.buildResult(data, catInfo);
+          cloudResult.tipo = "innovadora";
+          var local = buildLocalThree();
+          local[2] = cloudResult; // la IA en la nube analizó realmente la imagen: se usa como idea innovadora
+          Toast.show("Idea innovadora generada con tu IA en la nube");
+          finishThree(local);
+        }).catch(function (err) {
+          console.warn("CloudAI falló, usando modo local:", err);
+          Toast.show("La IA en la nube no respondió — usando modo local");
+          localFallback();
+        });
+      } else {
+        // Generación 100% local: no hay llamadas de red ni claves de API.
+        setTimeout(localFallback, 2200);
+      }
+    },
+
+    /* Elige hasta 3 plantillas del banco local y las etiqueta como
+       práctica / creativa / innovadora. Si la categoría tiene menos
+       de 3 plantillas, reutiliza con una variación textual honesta
+       (se aclara que es una variante, no una plantilla distinta). */
+    pickThree: function (categoryId) {
+      var bank = (IDEAS[categoryId] || IDEAS.otros).slice();
+      var tipos = ["practica", "creativa", "innovadora"];
+      var out = [];
+      for (var i = 0; i < 3; i++) {
+        var template = bank[i % bank.length];
+        if (i >= bank.length && bank.length) {
+          template = Object.assign({}, template, { idea: template.idea + " (variante)" });
+        }
+        out.push({ tipo: tipos[i], template: template });
+      }
+      return out;
+    },
+
+    showIdeas3: function (results) {
+      var wrap = document.getElementById("ideas3-list");
+      wrap.innerHTML = "";
+      var tipoInfo = {
+        practica: { emoji: "🔧", label: "Práctica" },
+        creativa: { emoji: "🎨", label: "Creativa" },
+        innovadora: { emoji: "🚀", label: "Innovadora" }
+      };
+      results.forEach(function (r, idx) {
+        var t = tipoInfo[r.tipo] || tipoInfo.practica;
+        var div = document.createElement("div");
+        div.className = "idea3-card";
+        div.tabIndex = 0;
+        div.setAttribute("role", "button");
+        div.innerHTML =
+          '<div class="idea3-emoji" aria-hidden="true">' + t.emoji + '</div>' +
+          '<div><span class="idea3-tag ' + r.tipo + '"></span><div class="idea3-name"></div><div class="idea3-desc"></div>' +
+          '<div class="idea3-meta"></div></div>';
+        div.querySelector(".idea3-tag").textContent = t.label;
+        div.querySelector(".idea3-name").textContent = r.idea;
+        div.querySelector(".idea3-desc").textContent = r.descripcion;
+        div.querySelector(".idea3-meta").textContent = "⭐ " + r.dificultad + " · ⏱ " + r.tiempo_estimado + (r.source === "cloud" ? " · 🤖 IA en la nube" : "");
+        var pick = function () { Idear.chooseIdea(idx); };
+        div.onclick = pick;
+        div.onkeydown = function (e) { if (e.key === "Enter") pick(); };
+        wrap.appendChild(div);
+      });
+      document.getElementById("ideas3-screen").style.display = "block";
+    },
+
+    chooseIdea: function (idx) {
+      var result = Idear.threeResults[idx];
+      document.getElementById("ideas3-screen").style.display = "none";
+      Idear.currentResult = result;
+      Idear.showResult(result);
+      Idear.saveToHistory(result);
+      App.addXP(50, "Proyecto creado");
+    },
+
+    backToChoices: function () {
+      if (Idear.threeResults && Idear.threeResults.length) {
+        document.getElementById("result-screen").style.display = "none";
+        document.getElementById("ideas3-screen").style.display = "block";
+      } else {
+        Idear.reset();
+      }
+    },
+
+    buildResult: function (template, catInfo, excludeIdx) {
+      return {
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        date: new Date().toISOString(),
+        image: Idear.imageDataUrl,
+        categoryId: catInfo.id,
+        categoryName: catInfo.name,
+        idea: template.idea,
+        descripcion: template.descripcion,
+        materiales_detectados: [catInfo.emoji + " " + catInfo.name],
+        materiales_adicionales: template.materiales_adicionales,
+        pasos: template.pasos,
+        dificultad: template.dificultad,
+        tiempo_estimado: template.tiempo_estimado,
+        beneficio_ambiental: template.beneficio_ambiental || ECO_TEXT[catInfo.id] || ECO_TEXT.otros,
+        source: template.source || "local",
+        completed: false
+      };
+    },
+
+    showResult: function (r) {
+      document.getElementById("loading-screen").style.display = "none";
+      document.getElementById("result-img").src = r.image;
+      document.getElementById("r-idea").textContent = r.idea;
+      document.getElementById("r-desc").textContent = r.descripcion;
+      document.getElementById("r-cat").textContent = r.categoryName;
+      document.getElementById("r-tiempo").textContent = r.tiempo_estimado;
+      document.getElementById("r-dif").textContent = r.dificultad;
+      document.getElementById("r-eco").textContent = r.beneficio_ambiental;
+
+      var catInfo = CATEGORIES.find(function (c) { return c.id === r.categoryId; }) || CATEGORIES[CATEGORIES.length - 1];
+      document.getElementById("id-emoji").textContent = catInfo.emoji;
+      document.getElementById("id-name").textContent = catInfo.name + " detectado";
+      document.getElementById("result-source-badge").textContent = r.source === "cloud" ? "🤖 IA en la nube" : "🔒 Modo local";
+      document.getElementById("id-conf").textContent = r.source === "cloud"
+        ? "Analizado por una IA en la nube conectada por ti — resultado real, no una plantilla local."
+        : "Coincidencia: Alta — estimación local basada en la categoría que elegiste, no verificada por un servicio de IA en la nube.";
+      document.getElementById("r-impact-g").textContent = catInfo.avgGrams + " g";
+
+      var mat = document.getElementById("r-materiales");
+      mat.innerHTML = "";
+      (r.materiales_detectados || []).forEach(function (m) {
+        var s = document.createElement("span");
+        s.className = "pill pill-green";
+        s.textContent = m;
+        mat.appendChild(s);
+      });
+
+      var adicWrap = document.getElementById("r-adicionales-wrap");
+      var adic = document.getElementById("r-adicionales");
+      adic.innerHTML = "";
+      if (r.materiales_adicionales && r.materiales_adicionales.length) {
+        adicWrap.style.display = "";
+        r.materiales_adicionales.forEach(function (m) {
+          var s = document.createElement("span");
+          s.className = "pill pill-blue";
+          s.textContent = m;
+          adic.appendChild(s);
+        });
+      } else {
+        adicWrap.style.display = "none";
+      }
+
+      var pasos = document.getElementById("r-pasos");
+      pasos.innerHTML = "";
+      (r.pasos || []).forEach(function (p, i) {
+        var div = document.createElement("div");
+        div.className = "step-item";
+        div.tabIndex = 0;
+        div.setAttribute("role", "button");
+        div.innerHTML = '<div class="step-num">' + String(i + 1).padStart(2, "0") + '</div><div class="step-text"></div>';
+        div.querySelector(".step-text").textContent = p;
+        var toggle = function () { div.classList.toggle("active"); };
+        div.onclick = toggle;
+        div.onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } };
+        pasos.appendChild(div);
+      });
+
+      Idear.renderAlternativas(r);
+
+      var favBtn = document.getElementById("btn-favorito");
+      var isFav = Idear.isFavorite(r.id);
+      favBtn.textContent = isFav ? "❤️" : "🤍";
+      favBtn.setAttribute("aria-pressed", isFav ? "true" : "false");
+
+      var completeBtn = document.getElementById("btn-completar");
+      completeBtn.disabled = !!r.completed;
+      completeBtn.textContent = r.completed ? "✅ Proyecto completado" : "✅ Marcar como completado";
+
+      document.getElementById("result-screen").style.display = "block";
+      document.getElementById("content").scrollTop = 0;
+    },
+
+    renderAlternativas: function (r) {
+      var bank = IDEAS[r.categoryId] || IDEAS.otros;
+      var catInfo = CATEGORIES.find(function (c) { return c.id === r.categoryId; });
+      var alts = bank.filter(function (t) { return t.idea !== r.idea; }).slice(0, 4);
+      var wrap = document.getElementById("alt-scroll");
+      wrap.innerHTML = "";
+      if (!alts.length) {
+        wrap.innerHTML = '<div class="empty-state" style="width:100%;">No hay más alternativas para esta categoría todavía.</div>';
+        return;
+      }
+      alts.forEach(function (t) {
+        var div = document.createElement("div");
+        div.className = "alt-card";
+        div.tabIndex = 0;
+        div.setAttribute("role", "button");
+        div.innerHTML = '<div class="a-name"></div><div class="a-desc"></div><div class="a-meta"><span></span><span></span></div>';
+        div.querySelector(".a-name").textContent = t.idea;
+        div.querySelector(".a-desc").textContent = t.descripcion;
+        var spans = div.querySelectorAll(".a-meta span");
+        spans[0].textContent = "⭐ " + t.dificultad;
+        spans[1].textContent = "⏱ " + t.tiempo_estimado;
+        var select = function () {
+          var newResult = Idear.buildResult(t, catInfo);
+          newResult.id = r.id; // conserva el mismo proyecto en el historial
+          newResult.image = r.image;
+          newResult.completed = r.completed;
+          Idear.currentResult = newResult;
+          Idear.updateHistoryItem(r.id, {
+            idea: newResult.idea, descripcion: newResult.descripcion,
+            materiales_adicionales: newResult.materiales_adicionales, pasos: newResult.pasos,
+            dificultad: newResult.dificultad, tiempo_estimado: newResult.tiempo_estimado,
+            beneficio_ambiental: newResult.beneficio_ambiental
+          });
+          Idear.showResult(newResult);
+          Toast.show("Alternativa aplicada");
+        };
+        div.onclick = select;
+        div.onkeydown = function (e) { if (e.key === "Enter") select(); };
+        wrap.appendChild(div);
+      });
+    },
+
+    saveToHistory: function (r) {
+      var history = STORE.get(KEYS.history, []);
+      history.unshift(r);
+      STORE.set(KEYS.history, history);
+      Idear.renderHistorial();
+      Retos.registrarEvento("proyecto", r);
+    },
+
+    updateHistoryItem: function (id, patch) {
+      var history = STORE.get(KEYS.history, []);
+      var idx = history.findIndex(function (h) { return h.id === id; });
+      if (idx > -1) { history[idx] = Object.assign({}, history[idx], patch); STORE.set(KEYS.history, history); }
+      var favs = STORE.get(KEYS.favorites, []);
+      var fIdx = favs.findIndex(function (f) { return f.id === id; });
+      if (fIdx > -1) { favs[fIdx] = Object.assign({}, favs[fIdx], patch); STORE.set(KEYS.favorites, favs); }
+    },
+
+    completar: function () {
+      if (!Idear.currentResult || Idear.currentResult.completed) return;
+      Idear.currentResult.completed = true;
+      Idear.updateHistoryItem(Idear.currentResult.id, { completed: true });
+      document.getElementById("btn-completar").disabled = true;
+      document.getElementById("btn-completar").textContent = "✅ Proyecto completado";
+      App.addXP(100, "Proyecto completado");
+      Perfil.render();
+      Inicio.render();
+      Retos.registrarEvento("completado", Idear.currentResult);
+    },
+
+    isFavorite: function (id) {
+      var favs = STORE.get(KEYS.favorites, []);
+      return favs.some(function (f) { return f.id === id; });
+    },
+
+    toggleFavoritoActual: function () {
+      if (!Idear.currentResult) return;
+      Idear.toggleFavorite(Idear.currentResult.id, Idear.currentResult);
+      var isFav = Idear.isFavorite(Idear.currentResult.id);
+      var favBtn = document.getElementById("btn-favorito");
+      favBtn.textContent = isFav ? "❤️" : "🤍";
+      favBtn.setAttribute("aria-pressed", isFav ? "true" : "false");
+    },
+
+    toggleFavorite: function (id, dataIfAdding) {
+      var favs = STORE.get(KEYS.favorites, []);
+      var idx = favs.findIndex(function (f) { return f.id === id; });
+      if (idx > -1) {
+        favs.splice(idx, 1);
+        Toast.show("Quitado de favoritos");
+      } else {
+        var item = dataIfAdding || (STORE.get(KEYS.history, []).find(function (h) { return h.id === id; }));
+        if (item) { favs.unshift(item); Toast.show("Guardado en favoritos"); }
+      }
+      STORE.set(KEYS.favorites, favs);
+      Idear.renderFavoritos();
+      Idear.renderHistorial();
+      Perfil.render();
+    },
+
+    renderHistorial: function () {
+      var list = document.getElementById("historial-list");
+      var history = STORE.get(KEYS.history, []);
+      var btnLimpiar = document.getElementById("btn-limpiar-historial");
+      if (!history.length) {
+        list.innerHTML = '<div class="empty-state">Aún no has generado ninguna idea.<br>Ve a "Nueva idea" para comenzar. ♻️</div>';
+        btnLimpiar.classList.add("hidden");
+        return;
+      }
+      btnLimpiar.classList.remove("hidden");
+      list.innerHTML = "";
+      history.forEach(function (h) { list.appendChild(Idear.buildHistItem(h)); });
+    },
+
+    renderFavoritos: function () {
+      var list = document.getElementById("favoritos-list");
+      var favs = STORE.get(KEYS.favorites, []);
+      if (!favs.length) {
+        list.innerHTML = '<div class="empty-state">Todavía no tienes ideas favoritas.<br>Toca el corazón en un resultado para guardarlo. 🤍</div>';
+        return;
+      }
+      list.innerHTML = "";
+      favs.forEach(function (h) { list.appendChild(Idear.buildHistItem(h)); });
+    },
+
+    buildHistItem: function (h) {
+      var div = document.createElement("div");
+      div.className = "hist-item";
+      div.tabIndex = 0;
+      div.setAttribute("role", "button");
+      var cat = CATEGORIES.find(function (c) { return c.id === h.categoryId; });
+      var fav = Idear.isFavorite(h.id);
+      var dateStr = new Date(h.date).toLocaleDateString("es", { day: "2-digit", month: "short" });
+      div.innerHTML =
+        '<div class="hist-emoji" aria-hidden="true">' + (cat ? cat.emoji : "♻️") + '</div>' +
+        '<div class="hist-info"><div class="hist-title"></div><div class="hist-meta"></div></div>' +
+        '<button class="hist-fav-btn" aria-label="Alternar favorito">' + (fav ? "❤️" : "🤍") + '</button>';
+      div.querySelector(".hist-title").textContent = h.idea;
+      div.querySelector(".hist-meta").textContent = dateStr + " · " + h.categoryName + (h.completed ? " · ✅ Completado" : "");
+      var openIt = function () { Idear.openHistItem(h); };
+      div.onclick = function (e) { if (e.target.closest(".hist-fav-btn")) return; openIt(); };
+      div.onkeydown = function (e) { if (e.key === "Enter") openIt(); };
+      div.querySelector(".hist-fav-btn").onclick = function (e) { e.stopPropagation(); Idear.toggleFavorite(h.id, h); };
+      return div;
+    },
+
+    openHistItem: function (h) {
+      Idear.currentResult = h;
+      Idear.showSub("nuevo");
+      document.getElementById("upload-ui").classList.add("hidden");
+      document.getElementById("preview-wrap").classList.add("hidden");
+      Idear.showResult(h);
+    },
+
+    limpiarHistorial: function () {
+      if (confirm("¿Eliminar todo tu historial de ideas? Los favoritos guardados no se verán afectados.")) {
+        STORE.set(KEYS.history, []);
+        Idear.renderHistorial();
+        Toast.show("Historial eliminado");
+        Perfil.render();
+        Inicio.render();
+      }
+    },
+
+    compartir: function () {
+      if (!Idear.currentResult) return;
+      var r = Idear.currentResult;
+      var text = "IDEAR TACAR — " + r.idea + "\n" + r.descripcion + "\nDificultad: " + r.dificultad + " · Tiempo: " + r.tiempo_estimado + "\nBeneficio ambiental: " + r.beneficio_ambiental;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          Toast.show("Copiado al portapapeles");
+          App.addXP(20, "Proyecto compartido");
+        }).catch(function () { Toast.show("No se pudo copiar. Selecciona el texto manualmente."); });
+      } else {
+        Toast.show("Tu navegador no permite copiar automáticamente.");
+      }
+    },
+
+    publicarEnComunidad: function () {
+      if (!Idear.currentResult) return;
+      Comunidad.publishProject(Idear.currentResult);
+    }
+  };
+
+  /* ============================================================
+     NOTICIAS — contenido local con categorías
+     ============================================================ */
+  var NEWS = [
+    { id: 1, title: "Cómo empezar a separar tus residuos en casa paso a paso", tag: "Reciclaje", emoji: "🏠", bg: "rgba(6,132,229,.1)" },
+    { id: 2, title: "Ideas para reutilizar envases antes de reciclarlos", tag: "Reciclaje", emoji: "♻️", bg: "rgba(192,236,184,.35)" },
+    { id: 3, title: "Qué materiales acepta normalmente un punto limpio", tag: "Reciclaje", emoji: "📦", bg: "rgba(6,132,229,.1)" },
+    { id: 4, title: "Beneficios de compostar residuos orgánicos en casa", tag: "Cambio climático", emoji: "🌱", bg: "rgba(192,236,184,.35)" },
+    { id: 5, title: "Cómo la economía circular reduce residuos industriales", tag: "Economía circular", emoji: "📘", bg: "rgba(6,132,229,.1)" },
+    { id: 6, title: "Proyectos creativos con materiales textiles en desuso", tag: "Innovación", emoji: "🧵", bg: "rgba(192,236,184,.35)" },
+    { id: 7, title: "Iniciativas para reducir el plástico en los océanos", tag: "Océanos", emoji: "🌊", bg: "rgba(74,187,189,.2)" },
+    { id: 8, title: "Especies marinas afectadas por residuos plásticos", tag: "Océanos", emoji: "🐢", bg: "rgba(74,187,189,.2)" },
+    { id: 9, title: "Startups que innovan con materiales reciclados", tag: "Innovación", emoji: "🔬", bg: "rgba(192,236,184,.35)" }
+  ];
+  var NEWS_CATS = ["Para ti", "Reciclaje", "Océanos", "Innovación", "Cambio climático", "Economía circular"];
+
+  var Noticias = {
+    activeCat: "Para ti",
+    searchVal: "",
+    init: function () {
+      var row = document.getElementById("news-cats");
+      row.innerHTML = "";
+      NEWS_CATS.forEach(function (cat) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "cat-chip" + (cat === Noticias.activeCat ? " active" : "");
+        btn.setAttribute("role", "tab");
+        btn.textContent = cat;
+        btn.onclick = function () { Noticias.setCat(cat); };
+        row.appendChild(btn);
+      });
+      Noticias.apply();
+    },
+    setCat: function (cat) {
+      Noticias.activeCat = cat;
+      document.querySelectorAll("#news-cats .cat-chip").forEach(function (b) {
+        b.classList.toggle("active", b.textContent === cat);
+      });
+      Noticias.apply();
+    },
+    onSearch: function (val) { Noticias.searchVal = val; Noticias.apply(); },
+    apply: function () {
+      var v = Noticias.searchVal.toLowerCase();
+      var list = NEWS.filter(function (n) {
+        var matchesCat = Noticias.activeCat === "Para ti" || n.tag === Noticias.activeCat;
+        var matchesSearch = n.title.toLowerCase().indexOf(v) > -1;
+        return matchesCat && matchesSearch;
+      });
+      Noticias.render(list);
+    },
+    render: function (list) {
+      var savedNews = STORE.get(KEYS.savedNews, {});
+      var container = document.getElementById("news-list");
+      container.innerHTML = "";
+      if (!list.length) { container.innerHTML = '<div class="empty-state">No se encontraron resultados.</div>'; return; }
+      list.forEach(function (n) {
+        var div = document.createElement("div");
+        div.className = "news-card";
+        div.tabIndex = 0;
+        div.innerHTML =
+          '<div class="news-emoji-box" style="background:' + n.bg + '" aria-hidden="true">' + n.emoji + '</div>' +
+          '<div class="news-body"><span class="pill pill-blue" style="font-size:10px;padding:2px 8px;"></span><div class="news-title"></div></div>' +
+          '<button class="news-save" aria-label="Guardar noticia">' + (savedNews[n.id] ? "⭐" : "☆") + '</button>';
+        div.querySelector(".pill").textContent = n.tag;
+        div.querySelector(".news-title").textContent = n.title;
+        div.querySelector(".news-save").onclick = function (e) { e.stopPropagation(); Noticias.toggleSave(n.id, e.target); };
+        container.appendChild(div);
+      });
+    },
+    toggleSave: function (id, btn) {
+      var savedNews = STORE.get(KEYS.savedNews, {});
+      savedNews[id] = !savedNews[id];
+      STORE.set(KEYS.savedNews, savedNews);
+      btn.textContent = savedNews[id] ? "⭐" : "☆";
+      Toast.show(savedNews[id] ? "Noticia guardada" : "Noticia quitada de guardados");
+    }
+  };
+
+  /* ============================================================
+     COMUNIDAD — publicaciones locales + creadores destacados
+     ============================================================ */
+  var DEFAULT_POSTS = [
+    { id: 1, user: "María", avatar: "🌿", time: "Ejemplo", text: "¡Hice un macetero con botellas PET! Resultó hermoso y las plantas crecieron muy bien 🌱", reactions: { "❤️": 42, "♻️": 4 } },
+    { id: 2, user: "Carlos", avatar: "🔧", time: "Ejemplo", text: "Transformé cajas de cartón en un organizador de escritorio. ¡Recomendado!", reactions: { "❤️": 12, "♻️": 3 } },
+    { id: 3, user: "Ana", avatar: "🎨", time: "Ejemplo", text: "Con tapas de botellas hice este cuadro decorativo. ¡Tardé 2 horas y valió la pena!", reactions: { "❤️": 56, "♻️": 6 } }
+  ];
+
+  var Comunidad = {
+    init: function () {
+      var posts = STORE.get(KEYS.posts, null);
+      if (!posts) { posts = DEFAULT_POSTS; STORE.set(KEYS.posts, posts); }
+      Comunidad.render(posts);
+      Comunidad.renderCreators(posts);
+    },
+    onComposeInput: function () {
+      var val = document.getElementById("compose-text").value.trim();
+      document.getElementById("btn-post").disabled = val.length === 0;
+    },
+    renderCreators: function (posts) {
+      var scores = {};
+      posts.forEach(function (p) {
+        var total = Object.values(p.reactions).reduce(function (a, b) { return a + b; }, 0);
+        if (!scores[p.user]) scores[p.user] = { user: p.user, avatar: p.avatar, score: 0, posts: 0 };
+        scores[p.user].score += total;
+        scores[p.user].posts += 1;
+      });
+      var ranked = Object.values(scores).sort(function (a, b) { return b.score - a.score; }).slice(0, 6);
+      var wrap = document.getElementById("creators-scroll");
+      wrap.innerHTML = "";
+      if (!ranked.length) { wrap.innerHTML = '<div class="empty-state" style="width:100%;">Aún no hay actividad suficiente.</div>'; return; }
+      ranked.forEach(function (c) {
+        var div = document.createElement("div");
+        div.className = "creator-card";
+        div.innerHTML = '<div class="creator-avatar" aria-hidden="true">' + c.avatar + '</div><div class="creator-name"></div><div class="creator-meta"></div>';
+        div.querySelector(".creator-name").textContent = c.user;
+        div.querySelector(".creator-meta").textContent = c.posts + " public. · " + c.score + " reac.";
+        wrap.appendChild(div);
+      });
+    },
+    render: function (list) {
+      var reacted = STORE.get(KEYS.reacted, {});
+      var saved = STORE.get(KEYS.savedPosts, {});
+      var container = document.getElementById("posts-list");
+      container.innerHTML = "";
+      if (!list.length) { container.innerHTML = '<div class="empty-state">Sé el primero en compartir una creación. ✨</div>'; return; }
+      list.forEach(function (p) {
+        var div = document.createElement("div");
+        div.className = "post-card";
+        var reactionsHtml = "";
+        Object.keys(p.reactions).forEach(function (emoji) {
+          var key = p.id + "-" + emoji;
+          var cls = reacted[key] ? "reaction-btn active" : "reaction-btn";
+          reactionsHtml += '<button class="' + cls + '" data-post="' + p.id + '" data-emoji="' + emoji + '">' + emoji + ' <span>' + p.reactions[emoji] + '</span></button>';
+        });
+        div.innerHTML =
+          '<div class="post-header"><div class="post-avatar" aria-hidden="true">' + p.avatar + '</div>' +
+          '<div><div class="post-name"></div><div class="post-time"></div></div>' +
+          (p.own ? '<button class="post-del" aria-label="Eliminar publicación">🗑️</button>' : '') +
+          '</div>' +
+          '<div class="post-text"></div>' +
+          (p.image ? '<img class="post-img" src="' + p.image + '" alt="">' : '') +
+          '<div class="post-reactions">' + reactionsHtml + '<button class="save-btn' + (saved[p.id] ? ' active' : '') + '" aria-label="Guardar publicación">' + (saved[p.id] ? "🔖" : "🏷️") + '</button></div>';
+        div.querySelector(".post-name").textContent = p.user;
+        div.querySelector(".post-time").textContent = p.time;
+        div.querySelector(".post-text").textContent = p.text;
+        if (p.own) div.querySelector(".post-del").onclick = function () { Comunidad.deletePost(p.id); };
+        div.querySelectorAll(".reaction-btn").forEach(function (btn) {
+          btn.onclick = function () { Comunidad.toggleReact(p.id, btn.getAttribute("data-emoji")); };
+        });
+        div.querySelector(".save-btn").onclick = function () { Comunidad.toggleSavePost(p.id); };
+        container.appendChild(div);
+      });
+    },
+    toggleReact: function (postId, emoji) {
+      var posts = STORE.get(KEYS.posts, []);
+      var reacted = STORE.get(KEYS.reacted, {});
+      var key = postId + "-" + emoji;
+      var already = !!reacted[key];
+      reacted[key] = !already;
+      var post = posts.find(function (p) { return p.id === postId; });
+      if (!post) return;
+      post.reactions[emoji] += already ? -1 : 1;
+      STORE.set(KEYS.posts, posts);
+      STORE.set(KEYS.reacted, reacted);
+      Comunidad.render(posts);
+      Comunidad.renderCreators(posts);
+    },
+    toggleSavePost: function (postId) {
+      var saved = STORE.get(KEYS.savedPosts, {});
+      saved[postId] = !saved[postId];
+      STORE.set(KEYS.savedPosts, saved);
+      Comunidad.render(STORE.get(KEYS.posts, []));
+      Toast.show(saved[postId] ? "Publicación guardada" : "Publicación quitada de guardados");
+    },
+    submitPost: function () {
+      var textarea = document.getElementById("compose-text");
+      var text = textarea.value.trim();
+      if (!text) return;
+      var posts = STORE.get(KEYS.posts, []);
+      var newPost = { id: Date.now(), user: "Tú", avatar: "😊", time: "Ahora", text: text, reactions: { "❤️": 0, "♻️": 0 }, own: true };
+      posts.unshift(newPost);
+      STORE.set(KEYS.posts, posts);
+      textarea.value = "";
+      document.getElementById("btn-post").disabled = true;
+      Comunidad.render(posts);
+      Comunidad.renderCreators(posts);
+      App.addXP(30, "Publicado en Comunidad");
+      Retos.registrarEvento("publicacion", newPost);
+      Toast.show("Publicación compartida en la comunidad local");
+    },
+    publishProject: function (r) {
+      var posts = STORE.get(KEYS.posts, []);
+      var text = "Transformé " + r.categoryName.toLowerCase() + " en: " + r.idea + ". " + r.descripcion;
+      var newPost = { id: Date.now(), user: "Tú", avatar: "😊", time: "Ahora", text: text, image: r.image, reactions: { "❤️": 0, "♻️": 0 }, own: true };
+      posts.unshift(newPost);
+      STORE.set(KEYS.posts, posts);
+      App.switchTab("comunidad");
+      Comunidad.render(posts);
+      Comunidad.renderCreators(posts);
+      App.addXP(30, "Proyecto publicado en Comunidad");
+      Toast.show("Proyecto publicado en la comunidad local");
+    },
+    deletePost: function (id) {
+      if (!confirm("¿Eliminar esta publicación?")) return;
+      var posts = STORE.get(KEYS.posts, []).filter(function (p) { return p.id !== id; });
+      STORE.set(KEYS.posts, posts);
+      Comunidad.render(posts);
+      Comunidad.renderCreators(posts);
+      Toast.show("Publicación eliminada");
+    }
+  };
+
+  /* ============================================================
+     PERFIL — XP, nivel, estadísticas reales, insignias
+     ============================================================ */
+  var BADGES = [
+    { id: "primera", emoji: "🏆", name: "Primer proyecto", check: function (s) { return s.total >= 1; } },
+    { id: "diez", emoji: "♻️", name: "10 objetos reutilizados", check: function (s) { return s.completados >= 10; } },
+    { id: "creador", emoji: "🌱", name: "Eco-Creador", check: function (s) { return s.total >= 5; } },
+    { id: "oceanos", emoji: "🌊", name: "Protector de océanos", check: function (s) { return s.plastico >= 2; } },
+    { id: "innovador", emoji: "💡", name: "Innovador", check: function (s) { return s.categorias >= 4; } },
+    { id: "comunidad", emoji: "🌎", name: "Voz de la comunidad", check: function (s) { return s.posts >= 1; } }
+  ];
+
+  var Perfil = {
+    render: function () {
+      var history = STORE.get(KEYS.history, []);
+      var favs = STORE.get(KEYS.favorites, []);
+      var posts = STORE.get(KEYS.posts, []).filter(function (p) { return p.own; });
+      var completados = history.filter(function (h) { return h.completed; }).length;
+      var materialesSet = {};
+      history.forEach(function (h) { materialesSet[h.categoryId] = true; });
+      var plasticoCount = history.filter(function (h) { return h.categoryId === "plastico"; }).length;
+
+      var lvl = App.getLevel();
+      var customAvatar = STORE.get(KEYS.profileAvatar, "");
+      document.getElementById("profile-avatar").textContent = customAvatar || lvl.current.emoji;
+      document.getElementById("profile-name").textContent = STORE.get(KEYS.profileName, "") || "Tu perfil eco";
+      document.getElementById("profile-level").textContent = "Nivel " + (LEVELS.indexOf(lvl.current) + 1) + " · " + lvl.current.name;
+      var joined = STORE.get(KEYS.joined, null);
+      document.getElementById("profile-since").textContent = joined ? "Miembro desde " + new Date(joined).toLocaleDateString("es", { month: "long", year: "numeric" }) : "";
+
+      var span = lvl.next ? (lvl.next.min - lvl.current.min) : 1;
+      var progress = lvl.next ? Math.min(100, Math.round(((lvl.xp - lvl.current.min) / span) * 100)) : 100;
+      document.getElementById("xp-fill").style.width = progress + "%";
+      document.getElementById("xp-text").textContent = lvl.xp + (lvl.next ? " / " + lvl.next.min + " pts" : " pts · Nivel máximo");
+
+      document.getElementById("stat-proyectos").textContent = history.length;
+      document.getElementById("stat-completados").textContent = completados;
+      document.getElementById("stat-kg").textContent = Idear.calcKg(history) + " kg";
+
+      var stats = { total: history.length, completados: completados, favoritos: favs.length, posts: posts.length, plastico: plasticoCount, categorias: Object.keys(materialesSet).length };
+      var grid = document.getElementById("badges-grid");
+      grid.innerHTML = "";
+      BADGES.forEach(function (b) {
+        var earned = b.check(stats);
+        var div = document.createElement("div");
+        div.className = "badge-card" + (earned ? " earned" : "");
+        div.innerHTML = '<div class="badge-emoji" aria-hidden="true">' + b.emoji + '</div><div class="badge-name"></div>';
+        div.querySelector(".badge-name").textContent = b.name;
+        grid.appendChild(div);
+      });
+    },
+
+    editName: function () {
+      var current = STORE.get(KEYS.profileName, "");
+      var val = prompt("¿Cómo quieres que te llamemos en IDEAR TACAR?", current);
+      if (val === null) return;
+      STORE.set(KEYS.profileName, val.trim().slice(0, 30));
+      Perfil.render();
+    },
+
+    editAvatar: function () {
+      var current = STORE.get(KEYS.profileAvatar, "");
+      var val = prompt("Elige un emoji para tu avatar (ej: 🌿, 🎨, 🔧):", current);
+      if (val === null) return;
+      STORE.set(KEYS.profileAvatar, val.trim().slice(0, 4));
+      Perfil.render();
+    }
+  };
+
+  /* ============================================================
+     IMAGE UTIL — comprime imágenes en el navegador antes de
+     guardarlas, para no saturar el almacenamiento local.
+     ============================================================ */
+  var ImageUtil = {
+    compress: function (file, maxDim, quality) {
+      return new Promise(function (resolve, reject) {
+        if (!file || !window.FileReader) { reject(new Error("Sin soporte")); return; }
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var img = new Image();
+          img.onload = function () {
+            try {
+              var w = img.width, h = img.height;
+              var scale = Math.min(1, maxDim / Math.max(w, h));
+              var cw = Math.max(1, Math.round(w * scale));
+              var ch = Math.max(1, Math.round(h * scale));
+              var canvas = document.createElement("canvas");
+              canvas.width = cw; canvas.height = ch;
+              var ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0, cw, ch);
+              resolve(canvas.toDataURL("image/jpeg", quality || 0.75));
+            } catch (err) {
+              resolve(e.target.result); // si falla el canvas, usa la imagen original
+            }
+          };
+          img.onerror = function () { reject(new Error("No se pudo procesar la imagen")); };
+          img.src = e.target.result;
+        };
+        reader.onerror = function () { reject(new Error("No se pudo leer el archivo")); };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  /* ============================================================
+     ONBOARDING — solo la primera vez, 5 pasos rápidos
+     ============================================================ */
+  var Onboarding = {
+    steps: [
+      { emoji: "📷", title: "Escanea", text: "Toma una foto de algo que ya no uses en ECO SCAN." },
+      { emoji: "🔎", title: "Descubre", text: "IDEAR TACAR identifica la categoría del material y busca posibilidades." },
+      { emoji: "💡", title: "Crea", text: "Elige entre tres ideas — práctica, creativa e innovadora — y sigue los pasos." },
+      { emoji: "🌎", title: "Comparte", text: "Publica tu transformación en la Comunidad Verde y muestra tu antes y después." },
+      { emoji: "🌱", title: "Ayuda al planeta", text: "Gana XP, sube de nivel y sigue tu impacto real en Planeta Vivo." }
+    ],
+    idx: 0,
+    start: function () {
+      Onboarding.idx = 0;
+      var dots = document.getElementById("ob-dots");
+      dots.innerHTML = "";
+      Onboarding.steps.forEach(function () {
+        var d = document.createElement("span");
+        d.className = "ob-dot";
+        dots.appendChild(d);
+      });
+      Onboarding.render();
+      document.getElementById("onboarding-overlay").classList.remove("hidden");
+    },
+    render: function () {
+      var s = Onboarding.steps[Onboarding.idx];
+      document.getElementById("ob-emoji").textContent = s.emoji;
+      document.getElementById("ob-title").textContent = s.title;
+      document.getElementById("ob-text").textContent = s.text;
+      document.querySelectorAll("#ob-dots .ob-dot").forEach(function (d, i) {
+        d.classList.toggle("active", i === Onboarding.idx);
+      });
+      document.getElementById("ob-next").textContent = (Onboarding.idx === Onboarding.steps.length - 1) ? "Empezar ✨" : "Siguiente";
+    },
+    next: function () {
+      if (Onboarding.idx < Onboarding.steps.length - 1) { Onboarding.idx++; Onboarding.render(); }
+      else Onboarding.finish();
+    },
+    finish: function () {
+      STORE.set(KEYS.onboardingDone, true);
+      document.getElementById("onboarding-overlay").classList.add("hidden");
+    }
+  };
+
+  /* ============================================================
+     SCREENS — pantallas secundarias a pantalla completa
+     ============================================================ */
+  var Screens = {
+    open: function (name) {
+      var el = document.getElementById("screen-" + name);
+      if (!el) return;
+      el.classList.remove("hidden");
+      if (name === "retos") Retos.render();
+      if (name === "planeta") PlanetaVivo.render();
+      if (name === "emprende") EcoEmprende.populateSelect();
+      if (name === "antesdespues") AntesDespues.render();
+      window.scrollTo(0, 0);
+    },
+    close: function (name) {
+      var el = document.getElementById("screen-" + name);
+      if (el) el.classList.add("hidden");
+    }
+  };
+
+  /* ============================================================
+     RETOS ECOLÓGICOS — diarios, semanales y especiales
+     ============================================================ */
+  var RETOS_DEF = {
+    diarios: [
+      { id: "d_1proyecto", emoji: "📸", name: "Escanea un objeto hoy", desc: "Analiza cualquier residuo en ECO SCAN.", meta: 1, xp: 20, tipo: "proyecto", periodo: "dia" },
+      { id: "d_1paso", emoji: "✅", name: "Marca un paso completado", desc: "Avanza en alguno de tus proyectos.", meta: 1, xp: 15, tipo: "completado", periodo: "dia" }
+    ],
+    semanales: [
+      { id: "s_botella", emoji: "🧴", name: "Reutiliza una botella", desc: "Completa un proyecto de categoría plástico.", meta: 1, xp: 60, tipo: "categoria:plastico", periodo: "semana" },
+      { id: "s_carton", emoji: "📦", name: "Transforma una caja de cartón", desc: "Completa un proyecto de categoría cartón.", meta: 1, xp: 60, tipo: "categoria:carton", periodo: "semana" },
+      { id: "s_tres", emoji: "🌱", name: "Completa tres proyectos esta semana", desc: "Termina 3 proyectos de cualquier categoría.", meta: 3, xp: 120, tipo: "completado", periodo: "semana" },
+      { id: "s_comunidad", emoji: "🌎", name: "Comparte con la comunidad", desc: "Publica una creación o transformación.", meta: 1, xp: 40, tipo: "publicacion", periodo: "semana" }
+    ],
+    especiales: [
+      { id: "e_diez", emoji: "🏆", name: "10 objetos reutilizados", desc: "Alcanza 10 proyectos completados en total.", meta: 10, xp: 200, tipo: "completado_total", periodo: "total" },
+      { id: "e_cinco_cat", emoji: "🧩", name: "Explorador de materiales", desc: "Usa 5 categorías de material distintas.", meta: 5, xp: 150, tipo: "categorias_distintas", periodo: "total" }
+    ]
+  };
+  var Retos = {
+    init: function () {
+      var weekStart = STORE.get(KEYS.retosWeekStart, null);
+      var now = new Date();
+      var mondayThisWeek = new Date(now);
+      var day = (mondayThisWeek.getDay() + 6) % 7; // lunes=0
+      mondayThisWeek.setDate(mondayThisWeek.getDate() - day);
+      mondayThisWeek.setHours(0, 0, 0, 0);
+      if (!weekStart || new Date(weekStart) < mondayThisWeek) {
+        // nueva semana: reinicia contadores semanales y diarios
+        var progress = STORE.get(KEYS.retosProgress, {});
+        Object.keys(progress).forEach(function (k) {
+          if (k.indexOf("s_") === 0 || k.indexOf("d_") === 0) delete progress[k];
+        });
+        STORE.set(KEYS.retosProgress, progress);
+        STORE.set(KEYS.retosWeekStart, mondayThisWeek.toISOString());
+      }
+      // reinicio diario simple: guarda la fecha del último registro diario
+      var lastDay = STORE.get("it_retos_last_day", null);
+      var todayStr = now.toDateString();
+      if (lastDay !== todayStr) {
+        var progress2 = STORE.get(KEYS.retosProgress, {});
+        Object.keys(progress2).forEach(function (k) { if (k.indexOf("d_") === 0) delete progress2[k]; });
+        STORE.set(KEYS.retosProgress, progress2);
+        STORE.set("it_retos_last_day", todayStr);
+      }
+    },
+
+    registrarEvento: function (evento, data) {
+      var progress = STORE.get(KEYS.retosProgress, {});
+      var unlocked = [];
+      var bump = function (id, meta) {
+        var prev = progress[id] || { count: 0, done: false };
+        if (prev.done) return;
+        prev.count += 1;
+        if (prev.count >= meta) { prev.done = true; unlocked.push(id); }
+        progress[id] = prev;
+      };
+
+      var todos = RETOS_DEF.diarios.concat(RETOS_DEF.semanales, RETOS_DEF.especiales);
+      todos.forEach(function (r) {
+        if (r.tipo === evento) bump(r.id, r.meta);
+        if (evento === "proyecto" && r.tipo === "proyecto") bump(r.id, r.meta);
+        if (evento === "completado" && r.tipo === "completado") bump(r.id, r.meta);
+        if (evento === "completado" && data && r.tipo === "categoria:" + data.categoryId) bump(r.id, r.meta);
+        if (evento === "publicacion" && r.tipo === "publicacion") bump(r.id, r.meta);
+      });
+
+      // Especiales basados en totales del historial (se recalculan siempre)
+      var history = STORE.get(KEYS.history, []);
+      var completadosTotal = history.filter(function (h) { return h.completed; }).length;
+      var catsDistintas = {};
+      history.forEach(function (h) { catsDistintas[h.categoryId] = true; });
+      RETOS_DEF.especiales.forEach(function (r) {
+        var prev = progress[r.id] || { count: 0, done: false };
+        if (prev.done) return;
+        if (r.tipo === "completado_total") prev.count = completadosTotal;
+        if (r.tipo === "categorias_distintas") prev.count = Object.keys(catsDistintas).length;
+        if (prev.count >= r.meta) { prev.done = true; unlocked.push(r.id); }
+        progress[r.id] = prev;
+      });
+
+      STORE.set(KEYS.retosProgress, progress);
+
+      unlocked.forEach(function (id) {
+        var def = todos.concat(RETOS_DEF.especiales).find(function (r) { return r.id === id; });
+        if (def) { App.addXP(def.xp, "Reto completado: " + def.name); }
+      });
+      Retos.render();
+    },
+
+    render: function () {
+      Retos.renderGroup("retos-diarios", RETOS_DEF.diarios);
+      Retos.renderGroup("retos-semanales", RETOS_DEF.semanales);
+      Retos.renderGroup("retos-especiales", RETOS_DEF.especiales);
+    },
+
+    renderGroup: function (containerId, list) {
+      var container = document.getElementById(containerId);
+      if (!container) return;
+      var progress = STORE.get(KEYS.retosProgress, {});
+      container.innerHTML = "";
+      list.forEach(function (r) {
+        var p = progress[r.id] || { count: 0, done: false };
+        var pct = Math.min(100, Math.round((p.count / r.meta) * 100));
+        var div = document.createElement("div");
+        div.className = "reto-card" + (p.done ? " done" : "");
+        div.innerHTML =
+          '<div class="reto-emoji" aria-hidden="true">' + r.emoji + '</div>' +
+          '<div style="flex:1;"><div class="reto-title"></div><div class="reto-desc"></div>' +
+          '<div class="reto-bar"><div class="reto-fill" style="width:' + pct + '%"></div></div></div>' +
+          '<div class="reto-xp"></div>';
+        div.querySelector(".reto-title").textContent = r.name;
+        div.querySelector(".reto-desc").textContent = r.desc;
+        div.querySelector(".reto-xp").textContent = p.done ? "✅ +" + r.xp : Math.min(p.count, r.meta) + "/" + r.meta;
+        container.appendChild(div);
+      });
+    }
+  };
+
+  /* ============================================================
+     PLANETA VIVO — panel de impacto acumulado
+     ============================================================ */
+  var PlanetaVivo = {
+    render: function () {
+      var history = STORE.get(KEYS.history, []);
+      var completados = history.filter(function (h) { return h.completed; }).length;
+      document.getElementById("planet-kg").textContent = Idear.calcKg(history) + " kg";
+
+      // Proyectos por mes (últimos 6 meses)
+      var now = new Date();
+      var months = [];
+      for (var i = 5; i >= 0; i--) {
+        var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        months.push({ key: d.getFullYear() + "-" + d.getMonth(), label: d.toLocaleDateString("es", { month: "short" }), count: 0 });
+      }
+      history.forEach(function (h) {
+        var d = new Date(h.date);
+        var key = d.getFullYear() + "-" + d.getMonth();
+        var m = months.find(function (mm) { return mm.key === key; });
+        if (m) m.count++;
+      });
+      var max = Math.max(1, Math.max.apply(null, months.map(function (m) { return m.count; })));
+      var chart = document.getElementById("planet-chart");
+      chart.innerHTML = "";
+      months.forEach(function (m) {
+        var col = document.createElement("div");
+        col.className = "chart-col";
+        col.innerHTML = '<div class="chart-bar" style="height:' + Math.max(4, Math.round((m.count / max) * 100)) + '%"></div><div class="chart-label"></div>';
+        col.querySelector(".chart-label").textContent = m.label;
+        chart.appendChild(col);
+      });
+
+      // Materiales más usados
+      var counts = {};
+      history.forEach(function (h) { counts[h.categoryId] = (counts[h.categoryId] || 0) + 1; });
+      var catsList = Object.keys(counts).map(function (id) {
+        var cat = CATEGORIES.find(function (c) { return c.id === id; });
+        return { cat: cat, count: counts[id] };
+      }).sort(function (a, b) { return b.count - a.count; }).slice(0, 6);
+      var catsWrap = document.getElementById("planet-cats");
+      catsWrap.innerHTML = "";
+      if (!catsList.length) {
+        catsWrap.innerHTML = '<div class="empty-state">Aún no hay materiales registrados.</div>';
+      } else {
+        var maxC = catsList[0].count;
+        catsList.forEach(function (item) {
+          var row = document.createElement("div");
+          row.className = "cat-usage-row";
+          row.innerHTML = '<span style="font-size:16px;">' + (item.cat ? item.cat.emoji : "🧩") + '</span>' +
+            '<div class="cat-usage-bar"><div class="cat-usage-fill" style="width:' + Math.round((item.count / maxC) * 100) + '%"></div></div>' +
+            '<span style="font-size:11px; color:var(--text-faint); min-width:18px; text-align:right;">' + item.count + '</span>';
+          catsWrap.appendChild(row);
+        });
+      }
+
+      var retosCompletados = Object.values(STORE.get(KEYS.retosProgress, {})).filter(function (p) { return p.done; }).length;
+      var strip = document.getElementById("planet-strip");
+      strip.innerHTML =
+        '<div class="impact-chip"><div class="v">' + history.length + '</div><div class="l">Proyectos</div></div>' +
+        '<div class="impact-chip"><div class="v">' + completados + '</div><div class="l">Reutilizados</div></div>' +
+        '<div class="impact-chip"><div class="v">' + retosCompletados + '</div><div class="l">Retos ganados</div></div>';
+    }
+  };
+
+  /* ============================================================
+     ECOMAPA — geolocalización real + enlace a un mapa externo
+     (no se inventan puntos de reciclaje sin una fuente real)
+     ============================================================ */
+  var EcoMapa = {
+    coords: null,
+    init: function () {},
+    getLocation: function () {
+      var chip = document.getElementById("mapa-loc-chip");
+      if (!navigator.geolocation) {
+        chip.textContent = "📡 Tu navegador no admite geolocalización.";
+        return;
+      }
+      chip.textContent = "📡 Buscando tu ubicación...";
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        EcoMapa.coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        chip.textContent = "📍 Ubicación lista (" + pos.coords.latitude.toFixed(3) + ", " + pos.coords.longitude.toFixed(3) + ")";
+        document.getElementById("mapa-search-btn").disabled = false;
+      }, function () {
+        chip.textContent = "📡 No se pudo obtener tu ubicación. Revisa los permisos.";
+      }, { enableHighAccuracy: false, timeout: 8000 });
+    },
+    openMaps: function () {
+      if (!EcoMapa.coords) return;
+      var url = "https://www.google.com/maps/search/?api=1&query=puntos+de+reciclaje&center=" + EcoMapa.coords.lat + "," + EcoMapa.coords.lng;
+      window.open(url, "_blank");
+    }
+  };
+
+  /* ============================================================
+     ECOEMPRENDE — convierte un proyecto en una idea de negocio
+     ============================================================ */
+  var EcoEmprende = {
+    init: function () {},
+    populateSelect: function () {
+      var sel = document.getElementById("biz-project");
+      var history = STORE.get(KEYS.history, []);
+      sel.innerHTML = "";
+      if (!history.length) {
+        sel.innerHTML = '<option value="">Aún no tienes proyectos generados</option>';
+        return;
+      }
+      history.forEach(function (h, i) {
+        var opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = h.idea;
+        sel.appendChild(opt);
+      });
+    },
+    calcular: function () {
+      var history = STORE.get(KEYS.history, []);
+      var sel = document.getElementById("biz-project");
+      var h = history[Number(sel.value)];
+      if (!h) { Toast.show("Genera al menos un proyecto en ECO SCAN primero."); return; }
+      var audience = document.getElementById("biz-audience").value.trim() || "vecinos y redes sociales locales";
+      var cost = parseFloat(document.getElementById("biz-cost").value) || 0;
+      var hours = parseFloat(document.getElementById("biz-hours").value) || 0;
+      var laborRate = 3; // estimación local orientativa por hora, editable por el usuario en el futuro
+      var totalCost = cost + hours * laborRate;
+      var price = totalCost * 1.8 + 1; // margen orientativo
+      var profit = price - totalCost;
+
+      var wrap = document.getElementById("biz-result");
+      wrap.innerHTML =
+        '<div class="biz-result">' +
+        '<div class="biz-row"><span>Producto</span><b>' + h.idea + '</b></div>' +
+        '<div class="biz-row"><span>Público objetivo</span><b>' + audience + '</b></div>' +
+        '<div class="biz-row"><span>Costo estimado</span><b>' + totalCost.toFixed(2) + '</b></div>' +
+        '<div class="biz-row"><span>Precio sugerido</span><b>' + price.toFixed(2) + '</b></div>' +
+        '<div class="biz-row"><span>Ganancia estimada</span><b>' + profit.toFixed(2) + '</b></div>' +
+        '</div>' +
+        '<p class="section-label" style="margin-top:14px;">💡 Ideas para promocionarlo</p>' +
+        '<ul style="font-size:12.5px; color:var(--text); line-height:1.7; padding-left:18px;">' +
+        '<li>Publica el antes y después en la Comunidad Verde de IDEAR TACAR.</li>' +
+        '<li>Ofrece el producto a ' + audience + ' con el argumento de sostenibilidad como valor diferencial.</li>' +
+        '<li>Documenta el proceso paso a paso para generar confianza en compradores.</li>' +
+        '</ul>';
+      App.addXP(15, "Plan EcoEmprende generado");
+    }
+  };
+
+  /* ============================================================
+     ANTES → DESPUÉS
+     ============================================================ */
+  var AntesDespues = {
+    antes: null, despues: null,
+    init: function () {},
+    load: function (slot, input) {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      ImageUtil.compress(file, 900, 0.72).then(function (dataUrl) {
+        AntesDespues[slot] = dataUrl;
+        var img = document.getElementById("ad-" + slot + "-img");
+        var placeholder = document.getElementById("ad-" + slot + "-placeholder");
+        img.src = dataUrl;
+        img.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+      }).catch(function () { Toast.show("No se pudo cargar la imagen."); });
+    },
+    guardar: function () {
+      if (!AntesDespues.antes || !AntesDespues.despues) {
+        Toast.show("Sube ambas fotos: antes y después.");
+        return;
+      }
+      var text = document.getElementById("ad-text").value.trim();
+      var list = STORE.get(KEYS.antesDespues, []);
+      var item = { id: Date.now(), antes: AntesDespues.antes, despues: AntesDespues.despues, text: text, date: new Date().toISOString() };
+      list.unshift(item);
+      STORE.set(KEYS.antesDespues, list);
+      AntesDespues.antes = null; AntesDespues.despues = null;
+      document.getElementById("ad-antes-img").classList.add("hidden");
+      document.getElementById("ad-despues-img").classList.add("hidden");
+      document.getElementById("ad-antes-placeholder").classList.remove("hidden");
+      document.getElementById("ad-despues-placeholder").classList.remove("hidden");
+      document.getElementById("ad-text").value = "";
+      App.addXP(25, "Transformación registrada");
+      AntesDespues.render();
+      Toast.show("Transformación guardada");
+    },
+    publicar: function (id) {
+      var list = STORE.get(KEYS.antesDespues, []);
+      var item = list.find(function (x) { return x.id === id; });
+      if (!item) return;
+      var posts = STORE.get(KEYS.posts, []);
+      var text = (item.text || "Mi transformación antes → después") + " ♻️";
+      posts.unshift({ id: Date.now(), user: "Tú", avatar: "😊", time: "Ahora", text: text, image: item.despues, reactions: { "❤️": 0, "♻️": 0 }, own: true });
+      STORE.set(KEYS.posts, posts);
+      App.switchTab("comunidad");
+      Comunidad.render(posts);
+      Comunidad.renderCreators(posts);
+      Retos.registrarEvento("publicacion", posts[0]);
+      Toast.show("Publicado en la Comunidad Verde");
+    },
+    render: function () {
+      var list = STORE.get(KEYS.antesDespues, []);
+      var wrap = document.getElementById("ad-list");
+      wrap.innerHTML = "";
+      if (!list.length) { wrap.innerHTML = '<div class="empty-state">Aún no has guardado transformaciones.</div>'; return; }
+      list.forEach(function (item) {
+        var div = document.createElement("div");
+        div.className = "ad-item";
+        div.innerHTML =
+          '<div class="ad-imgs"><img src="' + item.antes + '" alt="Antes"><img src="' + item.despues + '" alt="Después"></div>' +
+          '<div class="ad-body"><div style="font-size:12.5px; color:var(--text);"></div>' +
+          '<button class="btn-secondary" style="margin-top:8px;">♻️ Publicar en Comunidad</button></div>';
+        div.querySelector(".ad-body > div").textContent = item.text || "Sin descripción";
+        div.querySelector("button").onclick = function () { AntesDespues.publicar(item.id); };
+        wrap.appendChild(div);
+      });
+    }
+  };
+
+  /* ---------- Exponer al scope global para los onclick del HTML ---------- */
+  window.App = App;
+  window.CloudAI = CloudAI;
+  window.Inicio = Inicio;
+  window.Idear = Idear;
+  window.Noticias = Noticias;
+  window.Comunidad = Comunidad;
+  window.Perfil = Perfil;
+  window.Screens = Screens;
+  window.Retos = Retos;
+  window.PlanetaVivo = PlanetaVivo;
+  window.EcoMapa = EcoMapa;
+  window.EcoEmprende = EcoEmprende;
+  window.AntesDespues = AntesDespues;
+  window.Onboarding = Onboarding;
+  window.ImageUtil = ImageUtil;
+
+  App.initTheme();
+})();
+</script>
+</body>
+</html>
