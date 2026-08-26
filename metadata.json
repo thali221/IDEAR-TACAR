@@ -1,0 +1,11 @@
+{
+  "name": "IDEAR TACAR",
+  "description": "Transforma. Reutiliza. Inspira. App de reciclaje y transformación creativa de residuos.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
