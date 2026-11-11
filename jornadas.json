@@ -1,0 +1,45 @@
+[
+  {
+    "id": "JORN-01",
+    "title": "🧹 Gran Limpieza del Parque Central",
+    "description": "Jornada comunitaria para clasificar plásticos, latas y vidrios, y acondicionar zonas de juego infantiles.",
+    "place": "Parque Central - Encuentro en pileta central",
+    "date": "Sábado 10:00 a. m.",
+    "datetime": "2026-10-04T15:00:00Z",
+    "organizer": "Brigada Verde & IDEAR TACAR",
+    "participantsCount": 0,
+    "participants": [],
+    "status": "proxima",
+    "bring": "Guantes reutilizables y ropa cómoda",
+    "rewardXp": 20
+  },
+  {
+    "id": "JORN-02",
+    "title": "🌿 Recuperación y Limpieza de Riberas",
+    "description": "Retiro de residuos flotantes y siembra de especies nativas para protección del suelo fluvial.",
+    "place": "Puente San Martín - Ribera este",
+    "date": "Domingo 9:00 a. m.",
+    "datetime": "2026-10-05T14:00:00Z",
+    "organizer": "Colectivo EcoRíos",
+    "participantsCount": 0,
+    "participants": [],
+    "status": "proxima",
+    "bring": "Botas de jebe y bolsas de tela",
+    "rewardXp": 20
+  },
+  {
+    "id": "JORN-03",
+    "title": "✨ Jornada de Suprareciclaje y Limpieza Costera",
+    "description": "Recolección comunitaria de plásticos convertidos en macetas y mobiliario escolar comunal.",
+    "place": "Malecón de la Bahía",
+    "date": "Próxima convocatoria abierta",
+    "datetime": "2026-10-12T15:00:00Z",
+    "organizer": "Comunidad IDEAR TACAR",
+    "participantsCount": 0,
+    "participants": [],
+    "status": "proxima",
+    "bring": "Guantes y gorro",
+    "resultKg": 180,
+    "rewardXp": 20
+  }
+]

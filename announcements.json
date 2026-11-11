@@ -1,0 +1,32 @@
+[
+  {
+    "id": "AV-01",
+    "type": "campaña",
+    "icon": "📢",
+    "title": "Campaña de Recojo de Residuos Eléctricos y Baterías",
+    "summary": "Este fin de semana podrás depositar aparatos en desuso en el polideportivo municipal. ¡Evitemos metales pesados en la basura común!",
+    "date": "Viernes a Domingo",
+    "badge": "📢 Campaña",
+    "color": "#0284c7"
+  },
+  {
+    "id": "AV-02",
+    "type": "alerta",
+    "icon": "🚨",
+    "title": "Alerta Ambiental: Punto crítico de desmonte en Av. Las Torres",
+    "summary": "Se detectaron vertidos ilegales nocturnos. El equipo vecinal y la municipalidad han activado monitoreo preventivo.",
+    "date": "Activa hoy",
+    "badge": "🚨 Alerta Ambiental",
+    "color": "#ef4444"
+  },
+  {
+    "id": "AV-03",
+    "type": "actividad",
+    "icon": "💡",
+    "title": "Taller Comunitario: De residuo a producto rentable",
+    "summary": "Aprende a transformar maderas, botellas y latas en artículos decorativos con valor comercial. Acceso libre.",
+    "date": "Jueves 6:00 p. m.",
+    "badge": "✨ Actividad",
+    "color": "#10b981"
+  }
+]

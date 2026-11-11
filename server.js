@@ -8,7 +8,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+// Cloud Run sets PORT=8080 which is reserved for Nginx. Node server must always bind to port 3000.
+const PORT = parseInt(process.env.APP_PORT || process.env.DEFAULT_APP_PORT || '3000', 10);
+
+process.on('uncaughtException', (err) => {
+  console.error('Unhandled Exception in server:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// Health check endpoints for platform readiness probes
+app.get(['/health', '/api/health'], (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime(), port: PORT });
+});
 
 // Configuración de CORS y cabeceras para permitir acceso seguro desde navegadores y APK / WebViews
 app.use((req, res, next) => {
@@ -734,9 +747,9 @@ app.post('/api/community/profile/sync', (req, res) => {
 // POST /api/community/posts
 app.post('/api/community/posts', (req, res) => {
   try {
-    const { user, handle, avatar, avatarBg, levelName, levelNumber, text, image, category, categoryLabel, projectTitle, userId } = req.body || {};
-    if ((!text || !text.trim()) && !image) {
-      return res.status(400).json({ error: 'El contenido de la publicación o imagen es obligatorio' });
+    const { user, handle, avatar, avatarBg, levelName, levelNumber, text, image, video, category, categoryLabel, projectTitle, userId } = req.body || {};
+    if ((!text || !text.trim()) && !image && !video) {
+      return res.status(400).json({ error: 'El contenido de la publicación, imagen o video es obligatorio' });
     }
 
     const newPost = {
@@ -752,6 +765,7 @@ app.post('/api/community/posts', (req, res) => {
       timestamp: Date.now(),
       text: (text || "").trim().slice(0, 1000),
       image: image || null,
+      video: video || null,
       category: category || "otros",
       categoryLabel: categoryLabel || "♻️ Proyecto",
       projectTitle: projectTitle || null,
@@ -1000,221 +1014,527 @@ app.post('/api/challenges/weekly/participate', (req, res) => {
   res.json({ ok: true, challenge: weeklyChallenge });
 });
 
-// Curated verified eco-news fallback
-const CURATED_NEWS_FALLBACK = [
+// ==========================================
+// REAL ENVIRONMENTAL NEWS RSS ENGINE (IDEAR TACAR)
+// Sources: Actualidad Ambiental (Perú), Mongabay Latam, ONU Cambio Climático, EFE Verde
+// ==========================================
+const RSS_FEEDS = [
   {
-    id: "news_fb_1",
-    title: "Nueva tecnología convierte botellas PET en fibras textiles de alta resistencia",
-    summary: "Investigadores desarrollan un método de reciclaje químico que permite reutilizar plásticos de un solo uso sin perder propiedades mecánicas.",
-    tag: "Innovación",
-    emoji: "🔬",
-    source: "EcoInventos",
-    url: "https://ecoinventos.com",
-    date: "Esta semana"
+    name: "Actualidad Ambiental (Perú)",
+    url: "https://actualidadambiental.pe/feed/",
+    defaultCategory: "🇵🇪 Noticias de Perú",
+    defaultEmoji: "🇵🇪",
+    priority: 1
   },
   {
-    id: "news_fb_2",
-    title: "Tratado Global de Plásticos avanza con metas vinculantes de reutilización",
-    summary: "Más de 170 países acuerdan priorizar el rediseño de envases y la reducción de polímeros vírgenes hacia el 2040.",
-    tag: "Reciclaje",
-    emoji: "♻️",
-    source: "ONU Medio Ambiente",
-    url: "https://www.unep.org",
-    date: "Hace 3 días"
+    name: "Mongabay Latam",
+    url: "https://es.mongabay.com/feed/",
+    defaultCategory: "🌳 Áreas verdes",
+    defaultEmoji: "🌳",
+    priority: 2
   },
   {
-    id: "news_fb_3",
-    title: "Barreras fluviales retienen más de 10.000 toneladas de residuos antes del océano",
-    summary: "Iniciativas en ríos urbanos demuestran que atrapar desechos en cuencas previene la formación de microplásticos marinos.",
-    tag: "Océanos",
-    emoji: "🌊",
-    source: "The Ocean Cleanup",
-    url: "https://theoceancleanup.com",
-    date: "Hace 5 días"
+    name: "Noticias ONU Cambio Climático",
+    url: "https://news.un.org/feed/subscribe/es/news/topic/climate-change/feed/rss.xml",
+    defaultCategory: "🌎 Cambio climático",
+    defaultEmoji: "🌎",
+    priority: 3
   },
   {
-    id: "news_fb_4",
-    title: "El auge del upcycling en diseño de interiores reduce huella de carbono",
-    summary: "Estudios de arquitectura y muebles adoptan madera de descarte y palets para crear mobiliario modular sustentable.",
-    tag: "Economía circular",
-    emoji: "🪵",
-    source: "EFE Verde",
-    url: "https://efeverde.com",
-    date: "Hace 1 semana"
-  },
-  {
-    id: "news_fb_5",
-    title: "Ciudades multiplican puntos de compostaje comunitario y huertos urbanos",
-    summary: "Proyectos vecinales aprovechan residuos orgánicos para regenerar suelos degradados y cultivar alimentos locales.",
-    tag: "Innovación",
-    emoji: "🌱",
-    source: "National Geographic",
-    url: "https://www.nationalgeographic.es",
-    date: "Hace 1 semana"
-  },
-  {
-    id: "news_fb_6",
-    title: "Industria textil lanza sellos de trazabilidad para ropa confeccionada con retazos",
-    summary: "Marcas circulares promueven la recolección de prendas en desuso para transformarlas en nuevos hilos ecológicos.",
-    tag: "Economía circular",
-    emoji: "🧵",
-    source: "Fashion Revolution",
-    url: "https://www.fashionrevolution.org",
-    date: "Hace 2 semanas"
+    name: "EFE Verde",
+    url: "https://efeverde.com/feed/",
+    defaultCategory: "♻️ Reciclaje",
+    defaultEmoji: "♻️",
+    priority: 4
   }
 ];
 
-const newsCache = new Map();
-const NEWS_CACHE_TTL_MS = 20 * 60 * 1000; // 20 minutes
+let globalNewsCache = {
+  timestamp: 0,
+  articles: []
+};
+const NEWS_CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutos
 
-// Live Eco News with Google Search Grounding & Gemini (with in-memory cache and resilient fallback)
-app.get('/api/news/latest', async (req, res) => {
-  const category = req.query.category || 'all';
-  const cacheKey = category.toLowerCase().trim();
-
-  const now = new Date();
-  const dateStr = now.toLocaleDateString("es-ES", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
-  const todayKey = now.toISOString().slice(0, 10);
-
-  // Check in-memory fresh cache (also keyed to today)
-  const cached = newsCache.get(cacheKey);
-  const nowMs = Date.now();
-  if (cached && (nowMs - cached.timestamp < NEWS_CACHE_TTL_MS)) {
-    return res.json({
-      news: cached.news,
-      cached: true,
-      source: 'live_cached',
-      todayFormatted: dateStr,
-      todayKey: todayKey,
-      dailyDigest: cached.dailyDigest || "Descubre hoy las innovaciones mundiales y locales en economía circular y suprareciclaje."
-    });
+function classifyNewsCategory(title, summary, feedDefault) {
+  const combined = (title + " " + summary).toLowerCase();
+  
+  if (combined.includes("perú") || combined.includes("lima") || combined.includes("huancavelica") || combined.includes("loreto") || combined.includes("minam") || combined.includes("sernanp") || combined.includes("spda") || combined.includes("amazónico")) {
+    return { category: "🇵🇪 Noticias de Perú", emoji: "🇵🇪" };
+  }
+  if (combined.includes("recicl") || combined.includes("plástico") || combined.includes("pet") || combined.includes("segreg") || combined.includes("chatarra")) {
+    return { category: "♻️ Reciclaje", emoji: "♻️" };
+  }
+  if (combined.includes("circular") || combined.includes("upcycling") || combined.includes("suprarecicl") || combined.includes("bioeconom")) {
+    return { category: "♻️ Economía circular", emoji: "♻️" };
+  }
+  if (combined.includes("contamina") || combined.includes("basura") || combined.includes("desecho") || combined.includes("vertid") || combined.includes("derrame") || combined.includes("humo")) {
+    return { category: "🗑️ Contaminación", emoji: "🗑️" };
+  }
+  if (combined.includes("clima") || combined.includes("climátic") || combined.includes("calentamiento") || combined.includes("emisiones") || combined.includes("co2") || combined.includes("invernadero")) {
+    return { category: "🌎 Cambio climático", emoji: "🌎" };
+  }
+  if (combined.includes("agua") || combined.includes("río") || combined.includes("mar") || combined.includes("océano") || combined.includes("cuenca") || combined.includes("glaciar") || combined.includes("hídric")) {
+    return { category: "💧 Agua", emoji: "💧" };
+  }
+  if (combined.includes("árbol") || combined.includes("bosque") || combined.includes("selva") || combined.includes("área verde") || combined.includes("fauna") || combined.includes("flora") || combined.includes("biodiversidad") || combined.includes("especie") || combined.includes("parque")) {
+    return { category: "🌳 Áreas verdes", emoji: "🌳" };
+  }
+  if (combined.includes("urbano") || combined.includes("ciudad") || combined.includes("tráfico") || combined.includes("ruido") || combined.includes("metrópoli")) {
+    return { category: "🏙️ Problemas ambientales", emoji: "🏙️" };
+  }
+  if (combined.includes("innovac") || combined.includes("tecnolog") || combined.includes("científic") || combined.includes("solar") || combined.includes("batería") || combined.includes("hidrógeno")) {
+    return { category: "🔬 Innovación ambiental", emoji: "🔬" };
   }
 
+  return { category: feedDefault || "🌱 Medio ambiente", emoji: "🌱" };
+}
+
+async function fetchRealRSSArticles() {
+  const articles = [];
+  
+  for (const feed of RSS_FEEDS) {
+    try {
+      const response = await fetch(feed.url, {
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; IDEAR TACAR/1.0; EnvironmentalNewsReader)" },
+        signal: AbortSignal.timeout(6000)
+      });
+      
+      if (!response.ok) continue;
+      const text = await response.text();
+      
+      const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
+      let match;
+      let count = 0;
+      
+      while ((match = itemRegex.exec(text)) !== null && count < 6) {
+        const itemXml = match[1];
+        const titleMatch = itemXml.match(/<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>/i) || itemXml.match(/<title>([\s\S]*?)<\/title>/i);
+        const linkMatch = itemXml.match(/<link>([\s\S]*?)<\/link>/i) || itemXml.match(/<guid[^>]*>([\s\S]*?)<\/guid>/i);
+        const pubDateMatch = itemXml.match(/<pubDate>([\s\S]*?)<\/pubDate>/i);
+        const descMatch = itemXml.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/i) 
+          || itemXml.match(/<description>([\s\S]*?)<\/description>/i)
+          || itemXml.match(/<content:encoded><!\[CDATA\[([\s\S]*?)\]\]><\/content:encoded>/i)
+          || itemXml.match(/<content:encoded>([\s\S]*?)<\/content:encoded>/i);
+        
+        let title = titleMatch ? titleMatch[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim() : "";
+        let link = linkMatch ? linkMatch[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim() : "";
+        let rawDate = pubDateMatch ? pubDateMatch[1].trim() : "";
+        let rawDesc = descMatch ? descMatch[1].replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&#8220;|&#8221;/g, '"').replace(/\s+/g, " ").trim() : "";
+        
+        if (!rawDesc) {
+          rawDesc = title;
+        }
+        
+        if (!title || !link) continue;
+        
+        let dateFormatted = rawDate;
+        let pubTimestamp = Date.now();
+        try {
+          const d = new Date(rawDate);
+          if (!isNaN(d.getTime())) {
+            pubTimestamp = d.getTime();
+            dateFormatted = d.toLocaleDateString("es-ES", {
+              day: "numeric",
+              month: "long",
+              year: "numeric"
+            });
+          }
+        } catch (e) {}
+        
+        const { category, emoji } = classifyNewsCategory(title, rawDesc, feed.defaultCategory);
+
+        // Extraer imagen del artículo RSS (enclosure, media:content, media:thumbnail, o tag <img>)
+        let articleImg = null;
+        const enclosureMatch = itemXml.match(/<enclosure[^>]+url=['"]([^'"]+)['"]/i);
+        if (enclosureMatch && enclosureMatch[1] && !enclosureMatch[1].endsWith('.mp3') && !enclosureMatch[1].endsWith('.ogg')) {
+          articleImg = enclosureMatch[1];
+        }
+        if (!articleImg) {
+          const mediaMatch = itemXml.match(/<media:(?:content|thumbnail)[^>]+url=['"]([^'"]+)['"]/i);
+          if (mediaMatch && mediaMatch[1]) {
+            articleImg = mediaMatch[1];
+          }
+        }
+        if (!articleImg) {
+          const imgMatch = itemXml.match(/<img[^>]+src=['"]([^'"]+)['"]/i);
+          if (imgMatch && imgMatch[1]) {
+            articleImg = imgMatch[1];
+          }
+        }
+        if (!articleImg && descMatch) {
+          const descImgMatch = descMatch[0].match(/src=['"]([^'"]+)['"]/i);
+          if (descImgMatch && descImgMatch[1]) {
+            articleImg = descImgMatch[1];
+          }
+        }
+        if (articleImg) {
+          articleImg = articleImg.replace(/&amp;/g, "&").trim();
+        } else {
+          const CATEGORY_DEFAULT_IMAGES = {
+            "♻️ Reciclaje": "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80",
+            "🇵🇪 Noticias de Perú": "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=800&q=80",
+            "🌳 Áreas verdes": "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80",
+            "🌎 Cambio climático": "https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?auto=format&fit=crop&w=800&q=80",
+            "🌊 Océanos y agua": "https://images.unsplash.com/photo-1484291470158-b8f8d608850d?auto=format&fit=crop&w=800&q=80",
+            "🏙️ Problemas ambientales": "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80",
+            "🔬 Innovación ambiental": "https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=800&q=80",
+            "♻️ Economía circular": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80",
+            "default": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80"
+          };
+          articleImg = CATEGORY_DEFAULT_IMAGES[category] || CATEGORY_DEFAULT_IMAGES["default"];
+        }
+        
+        articles.push({
+          id: 'news_' + Buffer.from(link).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 16),
+          title: title,
+          summary: rawDesc.length > 170 ? rawDesc.slice(0, 170) + "..." : rawDesc,
+          category: category,
+          tag: category,
+          emoji: emoji,
+          image: articleImg,
+          source: feed.name,
+          url: link,
+          link: link,
+          date: dateFormatted,
+          pubTimestamp: pubTimestamp
+        });
+        
+        count++;
+      }
+    } catch (err) {
+      console.warn(`Error al consultar RSS de ${feed.name}:`, err.message);
+    }
+  }
+
+  // Ordenar por fecha más reciente
+  articles.sort((a, b) => (b.pubTimestamp || 0) - (a.pubTimestamp || 0));
+  return articles;
+}
+
+// GET /api/news/latest & /api/news — Noticias ambientales reales y recientes
+app.get(['/api/news/latest', '/api/news'], async (req, res) => {
+  const force = req.query.refresh === 'true' || req.query.force === 'true';
+  const filterCategory = req.query.category || 'all';
+  const now = Date.now();
+
   try {
-    const ai = getAIClient();
-    if (!ai) {
-      // Fallback to curated news if no key configured
-      return res.json({
-        news: filterCuratedNews(category),
-        cached: false,
-        source: 'curated_fallback',
-        todayFormatted: dateStr,
-        todayKey: todayKey,
-        dailyDigest: "Resumen del día: Avances destacados en reciclaje de polímeros y proyectos de bio-economía circular comunitaria."
+    if (force || !globalNewsCache.articles.length || (now - globalNewsCache.timestamp > NEWS_CACHE_TTL_MS)) {
+      const freshArticles = await fetchRealRSSArticles();
+      if (freshArticles.length > 0) {
+        globalNewsCache = {
+          timestamp: now,
+          articles: freshArticles
+        };
+      }
+    }
+
+    if (!globalNewsCache.articles.length) {
+      return res.status(503).json({
+        ok: false,
+        error: "📴 No se pudieron actualizar las noticias. Intenta nuevamente.",
+        news: []
       });
     }
 
-    let topicQuery = 'noticias recientes sobre reciclaje, economía circular, suprareciclaje y sostenibilidad de hoy y esta semana';
-    if (category && category !== 'all' && category !== 'Para ti') {
-      topicQuery = `noticias recientes sobre ${category} y medio ambiente de esta semana`;
-    }
-
-    const prompt = `Fecha actual: ${dateStr}.
-Busca y resume 6 noticias reales y actualizadas del día o recientes sobre: "${topicQuery}".
-Genera también un breve "dailyDigest" (resumen ecológico del día en 1 o 2 oraciones).
-
-Para cada noticia incluye:
-- title: Título atractivo e informativo en español (máx 80 caracteres)
-- summary: Resumen conciso de 1 o 2 oraciones de qué ocurrió y por qué importa.
-- tag: Categoría (una de: "Reciclaje", "Océanos", "Innovación", "Cambio climático", "Economía circular")
-- emoji: Emoji representativo (ej: ♻️, 🌊, 💡, 🌱, 🧵, 📦, 🔬)
-- source: Nombre del medio o institución fuente real (ej: EFE Verde, National Geographic, El País, ONU Medio Ambiente, EcoInventos)
-- url: URL o enlace real de la noticia si está disponible
-- date: Fecha (ej: "Hoy", "Ayer", "Esta semana")
-
-Devuelve la respuesta estrictamente en formato JSON válido con la siguiente estructura:
-{
-  "dailyDigest": "...",
-  "news": [
-    {
-      "id": 1,
-      "title": "...",
-      "summary": "...",
-      "tag": "...",
-      "emoji": "...",
-      "source": "...",
-      "url": "...",
-      "date": "..."
-    }
-  ]
-}`;
-
-    const response = await generateWithFallback(ai, prompt, {
-      tools: [{ googleSearch: {} }]
-    });
-
-    const text = response.text || '';
-    // Extract JSON from response text (handling code blocks if present)
-    let jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, text];
-    let cleaned = (jsonMatch[1] || text).trim();
-    
-    // Find json object bounds if mixed with commentary
-    const firstBrace = cleaned.indexOf('{');
-    const lastBrace = cleaned.lastIndexOf('}');
-    if (firstBrace !== -1 && lastBrace !== -1) {
-      cleaned = cleaned.substring(firstBrace, lastBrace + 1);
-    }
-
-    const parsed = JSON.parse(cleaned);
-    if (parsed && Array.isArray(parsed.news) && parsed.news.length > 0) {
-      const digest = parsed.dailyDigest || `Edición del ${dateStr}: Principales novedades en suprareciclaje y sustentabilidad.`;
-      newsCache.set(cacheKey, { timestamp: nowMs, news: parsed.news, dailyDigest: digest });
-      return res.json({
-        news: parsed.news,
-        cached: false,
-        source: 'gemini_search',
-        todayFormatted: dateStr,
-        todayKey: todayKey,
-        dailyDigest: digest
+    let list = globalNewsCache.articles;
+    if (filterCategory && filterCategory !== 'all' && filterCategory !== 'Para ti') {
+      const cleanFilter = filterCategory.replace(/^[^\w\s]+/, '').trim().toLowerCase();
+      list = list.filter(item => {
+        const itemCat = (item.category || '').toLowerCase();
+        const itemTitle = (item.title || '').toLowerCase();
+        const itemSumm = (item.summary || '').toLowerCase();
+        return itemCat.includes(cleanFilter) || itemTitle.includes(cleanFilter) || itemSumm.includes(cleanFilter);
       });
     }
 
-    throw new Error('Respuesta de noticias vacía o formato inválido');
-  } catch (error) {
-    console.warn('Gemini news fetch encountered issue (quota/rate-limit/network), serving resilient fallback:', error.message);
-    
-    // If we have any previous cached news (even if expired), use it
-    if (cached && Array.isArray(cached.news) && cached.news.length > 0) {
-      return res.json({
-        news: cached.news,
-        cached: true,
-        source: 'stale_cache',
-        todayFormatted: dateStr,
-        todayKey: todayKey,
-        dailyDigest: cached.dailyDigest || "Edición del día: Novedades en eco-innovación."
-      });
-    }
+    const elapsedMs = now - globalNewsCache.timestamp;
+    const elapsedMinutes = Math.floor(elapsedMs / (60 * 1000));
+    const lastUpdatedText = elapsedMinutes <= 0 ? "hace un momento" : `hace ${elapsedMinutes} min`;
 
-    // Otherwise return verified curated news without 500 error
-    const fallbackList = filterCuratedNews(category);
     res.json({
-      news: fallbackList,
-      cached: false,
-      source: 'curated_fallback',
-      todayFormatted: dateStr,
-      todayKey: todayKey,
-      dailyDigest: `Edición del ${dateStr}: Transformación creativa de materiales y tendencias sostenibles.`,
-      warning: 'Mostrando noticias verificadas locales debido a límites de cuota de IA'
+      ok: true,
+      news: list,
+      total: list.length,
+      cached: !force,
+      lastUpdated: lastUpdatedText,
+      lastUpdatedMs: globalNewsCache.timestamp,
+      dateFormatted: new Date().toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })
+    });
+  } catch (err) {
+    console.error("Error en /api/news/latest:", err);
+    if (globalNewsCache.articles.length > 0) {
+      return res.json({
+        ok: true,
+        news: globalNewsCache.articles,
+        cached: true,
+        isStale: true,
+        lastUpdated: "modo fuera de línea",
+        lastUpdatedMs: globalNewsCache.timestamp
+      });
+    }
+    res.status(500).json({
+      ok: false,
+      error: "📴 No se pudieron actualizar las noticias. Intenta nuevamente.",
+      news: []
     });
   }
 });
 
-function filterCuratedNews(category) {
-  if (!category || category === 'all' || category === 'Para ti') {
-    return CURATED_NEWS_FALLBACK;
+
+// ==========================================
+// API: REPORTES AMBIENTALES COMUNITARIOS (IDEAR TACAR)
+// ==========================================
+const REPORTS_FILE = path.join(__dirname, 'reports.json');
+
+function loadReports() {
+  try {
+    if (fs.existsSync(REPORTS_FILE)) {
+      const raw = fs.readFileSync(REPORTS_FILE, 'utf8');
+      return JSON.parse(raw);
+    }
+  } catch (e) {
+    console.warn('Error reading reports.json:', e.message);
   }
-  const filtered = CURATED_NEWS_FALLBACK.filter(n => 
-    (n.tag && n.tag.toLowerCase().includes(category.toLowerCase())) ||
-    (n.title && n.title.toLowerCase().includes(category.toLowerCase())) ||
-    (n.summary && n.summary.toLowerCase().includes(category.toLowerCase()))
-  );
-  return filtered.length > 0 ? filtered : CURATED_NEWS_FALLBACK;
+  return [];
 }
+
+function saveReports(data) {
+  try {
+    fs.writeFileSync(REPORTS_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) {
+    console.warn('Error saving reports.json:', e.message);
+  }
+}
+
+let reportsStore = loadReports();
+
+// GET /api/reports
+app.get('/api/reports', (req, res) => {
+  const { status, urgency, search } = req.query;
+  let list = reportsStore;
+  if (status && status !== 'todos') {
+    list = list.filter(r => r.status === status);
+  }
+  if (urgency && urgency !== 'todos') {
+    list = list.filter(r => r.urgency === urgency);
+  }
+  if (search) {
+    const s = search.toLowerCase();
+    list = list.filter(r => 
+      (r.id && r.id.toLowerCase().includes(s)) ||
+      (r.problemType && r.problemType.toLowerCase().includes(s)) ||
+      (r.description && r.description.toLowerCase().includes(s)) ||
+      (r.location && r.location.address && r.location.address.toLowerCase().includes(s))
+    );
+  }
+  // Order newest first
+  list = list.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  res.json({ ok: true, reports: list });
+});
+
+// POST /api/reports
+app.post('/api/reports', (req, res) => {
+  const { problemType, description, urgency, location, image, userName, userId } = req.body || {};
+  if (!problemType || !description) {
+    return res.status(400).json({ error: 'Tipo de problema y descripción son requeridos' });
+  }
+
+  // Generar código único secuencial IT-000X
+  const count = reportsStore.length + 1;
+  const uniqueCode = 'IT-' + String(count).padStart(4, '0');
+
+  const now = new Date().toISOString();
+  const newReport = {
+    id: uniqueCode,
+    problemType: problemType,
+    description: description.trim(),
+    urgency: urgency || 'media',
+    status: 'recibido',
+    location: location || { lat: -12.046, lng: -77.042, address: 'Ubicación comunitaria' },
+    image: image || null,
+    imageAfter: null,
+    createdAt: now,
+    updatedAt: now,
+    userId: userId || 'anon_user',
+    userName: userName || 'Ciudadano Consciente',
+    history: [
+      {
+        status: 'recibido',
+        date: now,
+        note: 'Reporte creado y recibido en el sistema de IDEAR TACAR.'
+      }
+    ]
+  };
+
+  reportsStore.unshift(newReport);
+  saveReports(reportsStore);
+
+  res.status(201).json({ ok: true, report: newReport });
+});
+
+// GET /api/reports/stats
+app.get('/api/reports/stats', (req, res) => {
+  const total = reportsStore.length;
+  const resueltos = reportsStore.filter(r => r.status === 'resuelto').length;
+  const enProceso = reportsStore.filter(r => r.status === 'en_proceso').length;
+  const recibidos = reportsStore.filter(r => r.status === 'recibido').length;
+  const urgentes = reportsStore.filter(r => r.urgency === 'alta').length;
+
+  const porTipo = {};
+  reportsStore.forEach(r => {
+    const k = r.problemType || 'Otros';
+    porTipo[k] = (porTipo[k] || 0) + 1;
+  });
+
+  res.json({
+    ok: true,
+    stats: {
+      total,
+      resueltos,
+      enProceso,
+      recibidos,
+      urgentes,
+      porcentajeResolucion: total > 0 ? Math.round((resueltos / total) * 100) : 0,
+      porTipo
+    }
+  });
+});
+
+// GET /api/reports/:id
+app.get('/api/reports/:id', (req, res) => {
+  const report = reportsStore.find(r => r.id === req.params.id);
+  if (!report) {
+    return res.status(404).json({ error: 'Reporte no encontrado' });
+  }
+  res.json({ ok: true, report });
+});
+
+// PATCH /api/reports/:id/status
+app.patch('/api/reports/:id/status', (req, res) => {
+  const { status, note, imageAfter } = req.body || {};
+  const reportIndex = reportsStore.findIndex(r => r.id === req.params.id);
+  if (reportIndex === -1) {
+    return res.status(404).json({ error: 'Reporte no encontrado' });
+  }
+
+  const report = reportsStore[reportIndex];
+  if (status) report.status = status;
+  if (imageAfter) report.imageAfter = imageAfter;
+  report.updatedAt = new Date().toISOString();
+
+  if (!report.history) report.history = [];
+  report.history.push({
+    status: status || report.status,
+    date: report.updatedAt,
+    note: note || `Estado actualizado a ${status}`
+  });
+
+  saveReports(reportsStore);
+  res.json({ ok: true, report });
+});
+
+// ==========================================
+// API: JORNADAS DE LIMPIEZA
+// ==========================================
+const JORNADAS_FILE = path.join(__dirname, 'jornadas.json');
+
+function loadJornadas() {
+  try {
+    if (fs.existsSync(JORNADAS_FILE)) {
+      return JSON.parse(fs.readFileSync(JORNADAS_FILE, 'utf8'));
+    }
+  } catch (e) {
+    console.warn('Error reading jornadas.json:', e.message);
+  }
+  return [];
+}
+
+function saveJornadas(data) {
+  try {
+    fs.writeFileSync(JORNADAS_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) {
+    console.warn('Error saving jornadas.json:', e.message);
+  }
+}
+
+let jornadasStore = loadJornadas();
+
+app.get('/api/jornadas', (req, res) => {
+  res.json({ ok: true, jornadas: jornadasStore });
+});
+
+app.post('/api/jornadas/:id/participate', (req, res) => {
+  const { userName, userId } = req.body || {};
+  const j = jornadasStore.find(item => item.id === req.params.id);
+  if (!j) return res.status(404).json({ error: 'Jornada no encontrada' });
+
+  if (!j.participants) j.participants = [];
+  const u = (userName && userName.trim()) || 'Usuario IDEAR TACAR';
+  
+  const existingIdx = j.participants.indexOf(u);
+  let participating = false;
+
+  if (existingIdx > -1) {
+    // Retirar participación si ya estaba registrado
+    j.participants.splice(existingIdx, 1);
+    j.participantsCount = Math.max(0, (j.participantsCount || 1) - 1);
+    participating = false;
+  } else {
+    // Registrar nueva participación real
+    j.participants.push(u);
+    j.participantsCount = (j.participantsCount || 0) + 1;
+    participating = true;
+  }
+
+  saveJornadas(jornadasStore);
+  res.json({ ok: true, jornada: j, participating: participating });
+});
+
+app.post('/api/jornadas', (req, res) => {
+  const { title, description, place, date, organizer, bring } = req.body || {};
+  if (!title || !place) return res.status(400).json({ error: 'Título y lugar son requeridos' });
+
+  const id = 'JORN-' + String(jornadasStore.length + 1).padStart(2, '0');
+  const newJ = {
+    id,
+    title,
+    description: description || 'Jornada voluntaria de recuperación ambiental.',
+    place,
+    date: date || 'Próximo sábado',
+    datetime: new Date().toISOString(),
+    organizer: organizer || 'Organización Vecinal',
+    participantsCount: 1,
+    participants: ['Organizador'],
+    status: 'proxima',
+    bring: bring || 'Guantes y ropa cómoda',
+    rewardXp: 20
+  };
+
+  jornadasStore.unshift(newJ);
+  saveJornadas(jornadasStore);
+  res.status(201).json({ ok: true, jornada: newJ });
+});
+
+// ==========================================
+// API: AVISOS Y VIDEOS
+// ==========================================
+app.get('/api/announcements', (req, res) => {
+  try {
+    const raw = fs.readFileSync(path.join(__dirname, 'announcements.json'), 'utf8');
+    res.json({ ok: true, announcements: JSON.parse(raw) });
+  } catch (e) {
+    res.json({ ok: true, announcements: [] });
+  }
+});
+
+app.get('/api/videos', (req, res) => {
+  try {
+    const raw = fs.readFileSync(path.join(__dirname, 'videos.json'), 'utf8');
+    res.json({ ok: true, videos: JSON.parse(raw) });
+  } catch (e) {
+    res.json({ ok: true, videos: [] });
+  }
+});
 
 // Rutas directas de descarga de documentación para la competencia
 app.get('/descargar/guion-reporte', (req, res) => {

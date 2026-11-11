@@ -1,0 +1,152 @@
+[
+  {
+    "id": "IT-0001",
+    "problemType": "🗑️ Acumulación de basura",
+    "description": "Gran acumulación de botellas de plástico, cartones y desechos en la esquina del parque vecinal.",
+    "urgency": "alta",
+    "status": "en_proceso",
+    "location": {
+      "lat": -12.0492,
+      "lng": -77.0398,
+      "address": "Av. Los Parques cda. 4, Cercado"
+    },
+    "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23e2e8f0'/><rect x='40' y='180' width='320' height='100' rx='12' fill='%2394a3b8'/><circle cx='120' cy='150' r='35' fill='%23ef4444' opacity='0.8'/><text x='120' y='158' font-size='30' text-anchor='middle'>🗑️</text><circle cx='200' cy='140' r='30' fill='%23f59e0b' opacity='0.8'/><text x='200' y='148' font-size='26' text-anchor='middle'>🧴</text><circle cx='270' cy='155' r='32' fill='%230284c7' opacity='0.8'/><text x='270' y='163' font-size='26' text-anchor='middle'>📦</text><text x='200' y='240' font-family='sans-serif' font-size='16' font-weight='bold' fill='%231e293b' text-anchor='middle'>Reporte IT-0001: Acumulación de basura</text><text x='200' y='265' font-family='sans-serif' font-size='12' fill='%23475569' text-anchor='middle'>Av. Los Parques · Urgencia Alta</text></svg>",
+    "imageAfter": null,
+    "createdAt": "2026-09-28T10:30:00.000Z",
+    "updatedAt": "2026-09-29T14:20:00.000Z",
+    "userId": "usr_carlos",
+    "userName": "Carlos Mendoza",
+    "history": [
+      {
+        "status": "recibido",
+        "date": "2026-09-28T10:30:00.000Z",
+        "note": "Reporte registrado y asignado al equipo de monitoreo vecinal."
+      },
+      {
+        "status": "en_proceso",
+        "date": "2026-09-29T14:20:00.000Z",
+        "note": "Brigada ambiental en coordinación para recojo y limpieza."
+      }
+    ]
+  },
+  {
+    "id": "IT-0002",
+    "problemType": "🌳 Daño de áreas verdes",
+    "description": "Ramas caídas y desmonte obstruyendo el paso peatonal en la alameda principal.",
+    "urgency": "media",
+    "status": "resuelto",
+    "location": {
+      "lat": -12.0450,
+      "lng": -77.0450,
+      "address": "Jr. Las Gardenias 240, La Florida"
+    },
+    "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23fee2e2'/><circle cx='200' cy='130' r='50' fill='%23fca5a5'/><text x='200' y='145' font-size='42' text-anchor='middle'>🌳</text><text x='200' y='220' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23991b1b' text-anchor='middle'>ANTES: Zona con ramas y desmonte</text><text x='200' y='250' font-family='sans-serif' font-size='12' fill='%23b91c1c' text-anchor='middle'>Reporte IT-0002 · Jr. Las Gardenias</text></svg>",
+    "imageAfter": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23dcfce7'/><circle cx='200' cy='130' r='50' fill='%2386efac'/><text x='200' y='145' font-size='42' text-anchor='middle'>✨</text><text x='200' y='220' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23166534' text-anchor='middle'>DESPUÉS: Área verde despejada y limpia</text><text x='200' y='250' font-family='sans-serif' font-size='12' fill='%2315803d' text-anchor='middle'>¡Solucionado con éxito por la brigada!</text></svg>",
+    "createdAt": "2026-09-25T08:15:00.000Z",
+    "updatedAt": "2026-09-27T16:00:00.000Z",
+    "userId": "usr_valeria",
+    "userName": "Valeria Ríos",
+    "history": [
+      {
+        "status": "recibido",
+        "date": "2026-09-25T08:15:00.000Z",
+        "note": "Reporte verificado por la comunidad."
+      },
+      {
+        "status": "en_proceso",
+        "date": "2026-09-26T11:00:00.000Z",
+        "note": "Jornada de desmalezado iniciada con 12 voluntarios."
+      },
+      {
+        "status": "resuelto",
+        "date": "2026-09-27T16:00:00.000Z",
+        "note": "Área despejada, ramas trituradas para compost vecinal."
+      }
+    ]
+  },
+  {
+    "id": "IT-0003",
+    "problemType": "🌊 Contaminación de agua",
+    "description": "Plásticos y bolsas estancadas flotando en el canal de regadío cerca del puente peatonal.",
+    "urgency": "alta",
+    "status": "recibido",
+    "location": {
+      "lat": -12.0530,
+      "lng": -77.0340,
+      "address": "Puente San Martín, Ribera del Río"
+    },
+    "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23e0f2fe'/><path d='M0 160 Q100 130 200 160 T400 160 L400 300 L0 300 Z' fill='%2338bdf8'/><circle cx='150' cy='180' r='25' fill='%23fff' opacity='0.7'/><text x='150' y='188' font-size='20' text-anchor='middle'>🥤</text><circle cx='240' cy='200' r='25' fill='%23fff' opacity='0.7'/><text x='240' y='208' font-size='20' text-anchor='middle'>🛍️</text><text x='200' y='80' font-family='sans-serif' font-size='16' font-weight='bold' fill='%230369a1' text-anchor='middle'>Reporte IT-0003: Contaminación de canal</text><text x='200' y='105' font-family='sans-serif' font-size='12' fill='%230284c7' text-anchor='middle'>Puente San Martín · Urgencia Alta</text></svg>",
+    "imageAfter": null,
+    "createdAt": "2026-09-30T09:45:00.000Z",
+    "updatedAt": "2026-09-30T09:45:00.000Z",
+    "userId": "usr_marcos",
+    "userName": "Marcos Tapia",
+    "history": [
+      {
+        "status": "recibido",
+        "date": "2026-09-30T09:45:00.000Z",
+        "note": "Reporte recibido. Notificando a brigada ambiental fluvial."
+      }
+    ]
+  },
+  {
+    "id": "IT-0004",
+    "problemType": "🚯 Basura en calles",
+    "description": "Contenedor público desbordado de residuos inorgánicos frente al mercado comunal.",
+    "urgency": "baja",
+    "status": "resuelto",
+    "location": {
+      "lat": -12.0410,
+      "lng": -77.0380,
+      "address": "Plaza Central, frente a estación"
+    },
+    "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23fef3c7'/><circle cx='200' cy='120' r='45' fill='%23fde68a'/><text x='200' y='132' font-size='36' text-anchor='middle'>🚯</text><text x='200' y='210' font-family='sans-serif' font-size='16' font-weight='bold' fill='%2392400e' text-anchor='middle'>ANTES: Contenedor saturado</text><text x='200' y='235' font-family='sans-serif' font-size='12' fill='%23b45309' text-anchor='middle'>Reporte IT-0004 · Plaza Central</text></svg>",
+    "imageAfter": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23ecfdf5'/><circle cx='200' cy='120' r='45' fill='%23a7f3d0'/><text x='200' y='132' font-size='36' text-anchor='middle'>♻️</text><text x='200' y='210' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23065f46' text-anchor='middle'>DESPUÉS: Contenedores vaciados y clasificados</text><text x='200' y='235' font-family='sans-serif' font-size='12' fill='%23047857' text-anchor='middle'>Instalados carteles de separación</text></svg>",
+    "createdAt": "2026-09-22T14:10:00.000Z",
+    "updatedAt": "2026-09-23T18:00:00.000Z",
+    "userId": "usr_ana",
+    "userName": "Ana Salazar",
+    "history": [
+      {
+        "status": "recibido",
+        "date": "2026-09-22T14:10:00.000Z",
+        "note": "Reporte registrado."
+      },
+      {
+        "status": "resuelto",
+        "date": "2026-09-23T18:00:00.000Z",
+        "note": "Contenedores sustituidos y zona sanitizada."
+      }
+    ]
+  },
+  {
+    "id": "IT-0005",
+    "problemType": "🔥 Quema de residuos",
+    "description": "Quema de plásticos y maleza en un terreno baldío generando humareda tóxica.",
+    "urgency": "alta",
+    "status": "en_proceso",
+    "location": {
+      "lat": -12.0475,
+      "lng": -77.0510,
+      "address": "Av. Circunvalación Norte Km 2"
+    },
+    "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23451a03'/><circle cx='200' cy='130' r='50' fill='%23ea580c' opacity='0.7'/><text x='200' y='145' font-size='42' text-anchor='middle'>🔥</text><text x='200' y='220' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23fdba74' text-anchor='middle'>Reporte IT-0005: Quema en terreno baldío</text><text x='200' y='250' font-family='sans-serif' font-size='12' fill='%23fed7aa' text-anchor='middle'>Urgencia Alta · Personal de serenzago informado</text></svg>",
+    "imageAfter": null,
+    "createdAt": "2026-09-29T19:00:00.000Z",
+    "updatedAt": "2026-09-29T19:40:00.000Z",
+    "userId": "usr_roberto",
+    "userName": "Roberto Núñez",
+    "history": [
+      {
+        "status": "recibido",
+        "date": "2026-09-29T19:00:00.000Z",
+        "note": "Alerta prioritaria recibida."
+      },
+      {
+        "status": "en_proceso",
+        "date": "2026-09-29T19:40:00.000Z",
+        "note": "Foco extinguido; notificando a fiscalización ambiental vecinal."
+      }
+    ]
+  }
+]
